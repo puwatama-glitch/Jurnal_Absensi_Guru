@@ -138,13 +138,13 @@ $ tree
 │       └── JadwalPelajaran.php
 ├── database
 │   ├── migrations
-│   │   ├── xxxx_create_guru_table.php
-│   │   ├── xxxx_create_kelas_table.php
-│   │   ├── xxxx_create_siswa_table.php
-│   │   ├── xxxx_create_mapel_table.php
-│   │   ├── xxxx_create_jurnal_mengajar_table.php
-│   │   ├── xxxx_create_detail_ketidakhadiran_table.php
-│   │   └── xxxx_create_jadwal_pelajaran_table.php
+│   │   ├── create_guru_table.php
+│   │   ├── create_kelas_table.php
+│   │   ├── create_siswa_table.php
+│   │   ├── create_mapel_table.php
+│   │   ├── create_jurnal_mengajar_table.php
+│   │   ├── create_detail_ketidakhadiran_table.php
+│   │   └── create_jadwal_pelajaran_table.php
 │   └── seeders
 │       ├── GuruSeeder.php
 │       ├── KelasSeeder.php
@@ -177,13 +177,3 @@ $ tree
 | `jurnal_mengajar` | Catatan harian kegiatan mengajar guru |
 | `detail_ketidakhadiran` | Rincian siswa yang tidak hadir per sesi jurnal |
 | `jadwal_pelajaran` | Jadwal mengajar rutin mingguan |
-
-## 👥 Tim
-
-**_(isi nama tim kamu)_** — _(isi tagline kelompok)_
-
-| Nama | Role |
-|---|---|
-| _(nama kamu)_ | _(misal: Backend)_ |
-| _(nama teman)_ | _(misal: Frontend)_ |
-| _(nama teman)_ | _(misal: Database)_ |
