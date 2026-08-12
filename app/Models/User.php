@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -27,6 +27,73 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
+    }
+
+    /* Role Relationships to separate tables */
+    public function admin()
+    {
+        return $this->hasOne(Admin::class, 'user_id');
+    }
+
+    public function waliKelas()
+    {
+        return $this->hasOne(WaliKelas::class, 'user_id');
+    }
+
+    public function guruPiket()
+    {
+        return $this->hasOne(GuruPiket::class, 'user_id');
+    }
+
+    public function guruMapel()
+    {
+        return $this->hasOne(GuruMapel::class, 'user_id');
+    }
+
+    public function satpam()
+    {
+        return $this->hasOne(Satpam::class, 'user_id');
+    }
+
+    public function kepalaSekolah()
+    {
+        return $this->hasOne(KepalaSekolah::class, 'user_id');
+    }
+
+    public function waka()
+    {
+        return $this->hasOne(Waka::class, 'user_id');
+    }
+
+    public function guru()
+    {
+        return $this->hasOne(Guru::class, 'user_id');
+    }
+
+    public function notifikasi()
+    {
+        return $this->hasMany(Notifikasi::class, 'user_id');
+    }
+
+    public function unreadNotifikasi()
+    {
+        return $this->notifikasi()->where('is_read', false);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role, $roles);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }
