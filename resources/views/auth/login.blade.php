@@ -23,7 +23,7 @@
         <!-- Header Branding -->
         <div class="hero-header">
             <div class="school-logo-icon">
-                <i class="bi bi-bank2"></i>
+                <img src="{{ asset('asset/logo_smea.png') }}" alt="Logo SMKN 1 Boyolangu" style="width: 34px; height: 34px; object-fit: contain;">
             </div>
             <div class="brand-text">
                 <h4>SMKN 1 BOYOLANGU</h4>
@@ -62,7 +62,7 @@
         <div class="login-card">
             <!-- Icon Badge -->
             <div class="card-icon-wrapper">
-                <i class="bi bi-shield-check"></i>
+                <img src="{{ asset('asset/logo.png') }}" alt="Logo Jurnal Absensi" style="width: 40px; height: 40px; object-fit: contain;">
             </div>
 
             <h2 class="card-title">JURNAL ABSENSI</h2>
