@@ -16,8 +16,9 @@ return new class extends Migration
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->string('no_hp', 20)->nullable();
             $table->text('alamat')->nullable();
-            $table->boolean('status_aktif')->default(true);
+            $table->boolean('status_aktif')->default(true)->index();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

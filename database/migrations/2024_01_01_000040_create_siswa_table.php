@@ -14,11 +14,12 @@ return new class extends Migration
             $table->string('nisn', 20)->unique()->nullable();
             $table->string('nama_lengkap');
             $table->enum('jenis_kelamin', ['L', 'P']);
-            $table->unsignedBigInteger('id_kelas');
+            $table->unsignedBigInteger('id_kelas')->index();
             $table->string('no_hp_ortu', 20)->nullable();
             $table->text('alamat')->nullable();
-            $table->boolean('status_aktif')->default(true);
+            $table->boolean('status_aktif')->default(true)->index();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('id_kelas')->references('id_kelas')->on('kelas')->cascadeOnDelete();
         });

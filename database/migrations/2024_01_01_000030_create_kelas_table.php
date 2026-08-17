@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('wali_kelas_id')->nullable()->constrained('wali_kelas')->nullOnDelete();
             $table->integer('jumlah_siswa')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

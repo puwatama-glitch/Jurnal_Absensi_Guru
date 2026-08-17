@@ -4,127 +4,119 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Siswa;
+use App\Models\Guru;
 use App\Models\Kelas;
-use App\Models\PresensiSiswa;
 use App\Models\JurnalMengajar;
-use App\Models\LogAktivitas;
+use App\Models\PresensiSiswa;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        // 1. Total Siswa & Rombel Aktif
-        $totalSiswa = Siswa::where('status_aktif', true)->count();
-        if ($totalSiswa === 0) {
-            $totalSiswa = 842;
-        }
-
-        $totalRombel = Kelas::count();
-        if ($totalRombel === 0) {
-            $totalRombel = 28;
-        }
-
-        // 2. Attendance metrics for Today (Distinct per student)
+        Carbon::setLocale('id');
         $today = Carbon::today()->format('Y-m-d');
-        
-        $hadirHariIni = PresensiSiswa::whereHas('jurnal', function ($q) use ($today) {
-            $q->where('tanggal', $today);
-        })->where('status', 'Hadir')->distinct('id_siswa')->count('id_siswa');
+        $yesterday = Carbon::yesterday()->format('Y-m-d');
 
-        $izinSakitHariIni = PresensiSiswa::whereHas('jurnal', function ($q) use ($today) {
-            $q->where('tanggal', $today);
-        })->whereIn('status', ['Izin', 'Sakit'])->distinct('id_siswa')->count('id_siswa');
+        // ── KPI Cards ──────────────────────────────────────────
+        $totalSiswa  = Siswa::where('status_aktif', true)->count();
+        $totalGuru   = Guru::where('status_aktif', true)->count();
+        $totalRombel = Kelas::count();
 
-        $alpaHariIni = PresensiSiswa::whereHas('jurnal', function ($q) use ($today) {
-            $q->where('tanggal', $today);
-        })->where('status', 'Alpha')->distinct('id_siswa')->count('id_siswa');
-
-        // Normalize if database stats exceed target or are empty to match exact baseline
-        if ($hadirHariIni === 0 || $hadirHariIni > $totalSiswa) {
-            $hadirHariIni = 774;
-            $izinSakitHariIni = 51;
-            $alpaHariIni = 17;
-        }
-
-        $pctHadir = ($totalSiswa > 0) ? min(100, round(($hadirHariIni / $totalSiswa) * 100)) : 92;
-        $pctIzinSakit = ($totalSiswa > 0) ? min(100, round(($izinSakitHariIni / $totalSiswa) * 100)) : 6;
-
-        $alpaKemarin = 11;
-
-        // 3. Jurnal Terisi
+        // Jurnal hari ini
         $jurnalTerisiCount = JurnalMengajar::where('tanggal', $today)->count();
         $jurnalTargetCount = 48;
-        if ($jurnalTerisiCount === 0) {
-            $jurnalTerisiCount = 34;
+
+        // Presensi hari ini
+        $hadirHariIni = PresensiSiswa::whereHas('jurnal', fn($q) => $q->where('tanggal', $today))
+            ->where('status', 'Hadir')->distinct('id_siswa')->count('id_siswa');
+
+        $izinSakitHariIni = PresensiSiswa::whereHas('jurnal', fn($q) => $q->where('tanggal', $today))
+            ->whereIn('status', ['Sakit', 'Izin', 'Dispensasi'])
+            ->distinct('id_siswa')->count('id_siswa');
+
+        $alpaHariIni = PresensiSiswa::whereHas('jurnal', fn($q) => $q->where('tanggal', $today))
+            ->where('status', 'Alpha')->distinct('id_siswa')->count('id_siswa');
+
+        $alpaKemarin = PresensiSiswa::whereHas('jurnal', fn($q) => $q->where('tanggal', $yesterday))
+            ->where('status', 'Alpha')->distinct('id_siswa')->count('id_siswa');
+
+        $totalPresensiHariIni = $hadirHariIni + $izinSakitHariIni + $alpaHariIni;
+        $pctHadir = $totalPresensiHariIni > 0
+            ? round(($hadirHariIni / $totalPresensiHariIni) * 100)
+            : 0;
+
+        $pctIzinSakit = $totalPresensiHariIni > 0
+            ? round(($izinSakitHariIni / $totalPresensiHariIni) * 100)
+            : 0;
+
+        // ── Trend Kehadiran 7 Hari Terakhir ────────────────────
+        $trendLabels = [];
+        $trendData   = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day   = Carbon::today()->subDays($i);
+            $count = PresensiSiswa::whereHas('jurnal', fn($q) => $q->where('tanggal', $day->format('Y-m-d')))
+                ->where('status', 'Hadir')->count();
+
+            $trendLabels[] = $day->translatedFormat('D');
+            $trendData[]   = $count;
         }
 
-        // 4. Trend Kehadiran 7 Hari Terakhir
         $trend7Hari = [
-            'labels' => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-            'data' => [200, 780, 260, 520, 200, 480, 680],
+            'labels' => $trendLabels,
+            'data'   => $trendData,
         ];
 
-        // 5. Perlu Perhatian Alerts
-        $perluPerhatian = [
-            [
-                'type' => 'danger',
-                'title' => '3 siswa alpa berturut-turut',
-                'subtitle' => 'XII RPL 2 — sudah 3 hari tanpa keterangan',
-                'icon' => 'x-circle'
-            ],
-            [
-                'type' => 'warning',
-                'title' => '14 jam pelajaran belum ada jurnal',
-                'subtitle' => 'Perlu tindak lanjut sebelum jam pulang',
-                'icon' => 'bookmark-warning'
-            ],
-            [
-                'type' => 'alert',
-                'title' => 'Kehadiran XI TKJ 1 di bawah 80%',
-                'subtitle' => 'Hari ini hanya 76% siswa hadir',
-                'icon' => 'arrow-left-warning'
-            ]
-        ];
+        // ── Aktivitas Terbaru ───────────────────────────────────
+        $logs = DB::table('log_aktivitas')->orderBy('created_at', 'desc')->take(5)->get();
+        $aktivitasTerbaru = $logs->map(fn($l) => [
+            'deskripsi' => $l->deskripsi,
+            'waktu'     => Carbon::parse($l->created_at)->translatedFormat('H:i'),
+            'tag'       => $l->aksi,
+        ])->toArray();
 
-        // 6. Aktivitas Terbaru
-        $logs = DB::table('log_aktivitas')
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+        // ── Perlu Perhatian (real alerts) ───────────────────────
+        $weekAgo = Carbon::today()->subDays(7)->format('Y-m-d');
+        $alpaCountByStudent = PresensiSiswa::whereHas('jurnal', fn($q) => $q->whereBetween('tanggal', [$weekAgo, $today]))
+            ->where('status', 'Alpha')
+            ->select('id_siswa', DB::raw('COUNT(*) as cnt'))
+            ->groupBy('id_siswa')
+            ->having('cnt', '>=', 3)
+            ->count();
 
-        $aktivitasTerbaru = [];
-        if ($logs->count() > 0) {
-            foreach ($logs as $log) {
-                $aktivitasTerbaru[] = [
-                    'deskripsi' => $log->deskripsi,
-                    'waktu' => Carbon::parse($log->created_at)->format('H:i'),
-                    'tag' => $log->aksi,
-                ];
-            }
-        } else {
-            $aktivitasTerbaru = [
-                [
-                    'deskripsi' => 'Bu Sari mengisi jurnal & absensi XII RPL 1',
-                    'waktu' => '08:42',
-                    'tag' => 'Matematika'
-                ],
-                [
-                    'deskripsi' => 'Pak Ahmad mengisi jurnal & absensi X TKJ 2',
-                    'waktu' => '08:15',
-                    'tag' => 'Bahasa Inggris'
-                ],
-                [
-                    'deskripsi' => 'Bu Rina menambahkan data siswa baru',
-                    'waktu' => '07:50',
-                    'tag' => 'Manajemen Siswa'
-                ]
+        $perluPerhatian = [];
+        if ($alpaCountByStudent > 0) {
+            $perluPerhatian[] = [
+                'type'     => 'danger',
+                'title'    => "{$alpaCountByStudent} siswa alpa ≥ 3 kali dalam 7 hari",
+                'subtitle' => 'Perlu tindak lanjut segera',
+                'icon'     => 'x-circle',
             ];
         }
 
-        // Format Indonesian Date
-        Carbon::setLocale('id');
+        $jurnalKosong = JurnalMengajar::where('tanggal', $today)->where('materi', '')->count();
+        if ($jurnalKosong > 0) {
+            $perluPerhatian[] = [
+                'type'     => 'warning',
+                'title'    => "{$jurnalKosong} jurnal belum diisi materi",
+                'subtitle' => 'Hari ini masih ada jurnal kosong',
+                'icon'     => 'bookmark-warning',
+            ];
+        }
+
+        if (empty($perluPerhatian)) {
+            $perluPerhatian[] = [
+                'type'     => 'success',
+                'title'    => 'Semua berjalan baik hari ini',
+                'subtitle' => 'Tidak ada alert yang memerlukan perhatian',
+                'icon'     => 'check-circle',
+            ];
+        }
+
+        $authUser      = Auth::user();
+        $namaUser      = $authUser ? $authUser->name : 'Admin';
         $dateFormatted = Carbon::now()->translatedFormat('l, j F Y');
 
         return view('admin.dashboard.index', compact(
@@ -141,7 +133,13 @@ class AdminDashboardController extends Controller
             'trend7Hari',
             'perluPerhatian',
             'aktivitasTerbaru',
-            'dateFormatted'
+            'dateFormatted',
+            'namaUser'
         ));
+    }
+
+    public function help()
+    {
+        return view('admin.help.index');
     }
 }

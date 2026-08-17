@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('nama_mapel');
             $table->enum('kelompok', ['Normatif', 'Adaptif', 'Produktif', 'Muatan_Lokal'])->default('Normatif');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_guru');
             $table->unsignedBigInteger('id_kelas');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('id_mapel')->references('id_mapel')->on('mapel')->cascadeOnDelete();
             $table->foreign('id_guru')->references('id_guru')->on('guru')->cascadeOnDelete();

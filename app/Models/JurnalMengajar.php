@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JurnalMengajar extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'jurnal_mengajar';
 
     protected $primaryKey = 'id_jurnal';
