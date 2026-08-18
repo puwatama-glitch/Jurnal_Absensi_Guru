@@ -7,6 +7,8 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminAbsensiController;
 use App\Http\Controllers\MasterSiswaController;
 use App\Http\Controllers\MasterGuruController;
+use App\Http\Controllers\MasterJurusanController;
+use App\Http\Controllers\MasterKelasController;
 use App\Http\Controllers\AdminLaporanController;
 use App\Http\Controllers\ProfileController;
 
@@ -40,6 +42,18 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/guru', [MasterGuruController::class, 'store'])->name('guru.store');
         Route::put('/guru/{id}', [MasterGuruController::class, 'update'])->name('guru.update');
         Route::delete('/guru/{id}', [MasterGuruController::class, 'destroy'])->name('guru.destroy');
+
+        // Jurusan CRUD
+        Route::get('/jurusan', [MasterJurusanController::class, 'index'])->name('jurusan');
+        Route::post('/jurusan', [MasterJurusanController::class, 'store'])->name('jurusan.store');
+        Route::put('/jurusan/{id}', [MasterJurusanController::class, 'update'])->name('jurusan.update');
+        Route::delete('/jurusan/{id}', [MasterJurusanController::class, 'destroy'])->name('jurusan.destroy');
+
+        // Kelas CRUD
+        Route::get('/kelas', [MasterKelasController::class, 'index'])->name('kelas');
+        Route::post('/kelas', [MasterKelasController::class, 'store'])->name('kelas.store');
+        Route::put('/kelas/{id}', [MasterKelasController::class, 'update'])->name('kelas.update');
+        Route::delete('/kelas/{id}', [MasterKelasController::class, 'destroy'])->name('kelas.destroy');
     });
 
     // Laporan (Pusat Rekap)

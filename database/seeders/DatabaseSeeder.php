@@ -14,6 +14,7 @@ use App\Models\KepalaSekolah;
 use App\Models\Waka;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\Jurusan;
 use App\Models\Mapel;
 use App\Models\TahunAjaran;
 
@@ -172,21 +173,22 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create 28 Rombel Aktif (Classes)
-        $jurusanList = ['RPL', 'TKJ', 'AKL', 'OTKP', 'TBM', 'DMM'];
+        $jurusanRecords = Jurusan::all()->keyBy('kode_jurusan');
         $tingkatList = ['X', 'XI', 'XII'];
         $kelasInstances = [];
 
         $kelasCount = 0;
         foreach ($tingkatList as $tingkat) {
-            foreach ($jurusanList as $j) {
+            foreach ($jurusanRecords as $j) {
                 for ($num = 1; $num <= 2; $num++) {
                     $kelasCount++;
                     if ($kelasCount > 28) break;
-                    $namaKelas = "{$tingkat} {$j} {$num}";
+                    $namaKelas = "{$tingkat} {$j->kode_jurusan} {$num}";
                     $k = Kelas::create([
                         'nama_kelas' => $namaKelas,
                         'tingkat' => $tingkat,
-                        'jurusan' => $j,
+                        'id_jurusan' => $j->id_jurusan,
+                        'jurusan' => $j->kode_jurusan,
                         'wali_kelas_id' => $waliKelasRecord->id,
                         'jumlah_siswa' => rand(28, 32),
                     ]);

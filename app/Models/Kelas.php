@@ -17,13 +17,19 @@ class Kelas extends Model
         'nama_kelas',
         'tingkat',
         'jurusan',
+        'id_jurusan',
         'wali_kelas_id',
         'jumlah_siswa',
     ];
 
+    public function jurusanRelation()
+    {
+        return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id_jurusan');
+    }
+
     public function waliKelas()
     {
-        return $this->belongsTo(Guru::class, 'wali_kelas_id', 'id_guru');
+        return $this->belongsTo(WaliKelas::class, 'wali_kelas_id', 'id');
     }
 
     public function siswa()

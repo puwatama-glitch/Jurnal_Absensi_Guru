@@ -248,6 +248,34 @@
             background-color: #ffeef0;
         }
 
+        .sidebar-bottom a.help-link {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            padding: 7px 16px;
+            gap: 10px;
+            line-height: 1.35;
+        }
+
+        .sidebar-bottom a.help-link i {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .sidebar-bottom a.help-link:hover {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+
+        .sidebar-bottom a.help-link:hover i {
+            color: #64748b;
+        }
+
+        .sidebar-bottom a.help-link.active {
+            color: #64748b;
+            background-color: #f1f5f9;
+        }
+
         /* Main Content Wrapper */
         .main-wrapper {
             flex: 1;
@@ -648,6 +676,18 @@
                                 <span>Manajemen Guru</span>
                             </a>
                         </li>
+                        <li class="{{ request()->is('admin/master/jurusan*') ? 'active' : '' }}">
+                            <a href="{{ url('/admin/master/jurusan') }}">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <span>Manajemen Jurusan</span>
+                            </a>
+                        </li>
+                        <li class="{{ request()->is('admin/master/kelas*') ? 'active' : '' }}">
+                            <a href="{{ url('/admin/master/kelas') }}">
+                                <i class="fa-solid fa-door-open"></i>
+                                <span>Manajemen Kelas</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -661,9 +701,9 @@
         </div>
 
         <div class="sidebar-bottom">
-            <a href="{{ url('/admin/help') }}">
-                <i class="fa-solid fa-circle-info"></i>
-                <span>Help Centre</span>
+            <a href="{{ route('admin.help') }}" class="help-link {{ request()->routeIs('admin.help') ? 'active' : '' }}">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Pusat Bantuan &amp; Panduan Resmi</span>
             </a>
             <a href="#" class="logout" onclick="openLogoutModal(); return false;">
                 <i class="fa-solid fa-right-from-bracket"></i>
