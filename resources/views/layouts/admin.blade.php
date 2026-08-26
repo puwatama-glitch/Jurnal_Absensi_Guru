@@ -78,8 +78,24 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            margin-top: 15px;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .sidebar-category-header {
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #94a3b8;
+            padding: 14px 14px 4px 14px;
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        .sidebar-category-header:first-child {
+            padding-top: 4px;
         }
 
         .sidebar-menu li a {
@@ -317,6 +333,11 @@
             gap: 20px;
         }
 
+        /* Notification Dropdown & Bell */
+        .notif-dropdown-wrap {
+            position: relative;
+        }
+
         .notif-bell {
             width: 44px;
             height: 44px;
@@ -329,24 +350,226 @@
             position: relative;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
         .notif-bell:hover {
             transform: scale(1.08);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            background: #ffffff;
+            color: #2b43b9;
         }
 
         .notif-badge {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 10px;
-            height: 10px;
-            background-color: #ff3b30;
-            border-radius: 50%;
+            top: -3px;
+            right: -3px;
+            min-width: 19px;
+            height: 19px;
+            padding: 0 5px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 10px;
             border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             animation: pulseGlow 2s infinite;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+        }
+
+        .notif-dropdown {
+            position: absolute;
+            top: 56px;
+            right: 0;
+            width: 390px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(226, 232, 240, 0.8);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9999;
+            animation: fadeInSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .notif-dropdown.show {
+            display: flex;
+        }
+
+        .notif-header {
+            padding: 16px 20px;
+            background: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notif-header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .notif-count-pill {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 20px;
+        }
+
+        .notif-btn-read-all {
+            background: none;
+            border: none;
+            color: #2b43b9;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .notif-btn-read-all:hover {
+            background: #eaeff8;
+        }
+
+        .notif-body {
+            max-height: 380px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid #f8fafc;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.15s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notif-item:hover {
+            background: #f8fafc;
+        }
+
+        .notif-item.unread {
+            background: #f0f4ff;
+        }
+
+        .notif-item.unread:hover {
+            background: #e6edff;
+        }
+
+        .notif-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        }
+
+        .notif-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.3;
+        }
+
+        .notif-desc {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+            margin-top: 3px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .notif-meta-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .notif-badge-tag {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .notif-time-txt {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .notif-unread-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2b43b9;
+            flex-shrink: 0;
+            align-self: center;
+            box-shadow: 0 0 0 3px rgba(43, 67, 185, 0.2);
+        }
+
+        .notif-empty {
+            padding: 36px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .notif-empty i {
+            font-size: 36px;
+            color: #cbd5e1;
+        }
+
+        .notif-empty span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .notif-footer {
+            padding: 10px 16px;
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+            text-align: center;
         }
 
         .user-profile-badge {
@@ -638,11 +861,20 @@
             </div>
 
             <ul class="sidebar-menu">
+                {{-- Kategori: Menu Utama --}}
+                <li class="sidebar-category-header">
+                    <span>Menu Utama</span>
+                </li>
                 <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('admin.dashboard') }}">
                         <i class="fa-solid fa-border-all"></i>
                         <span>Dashboard</span>
                     </a>
+                </li>
+
+                {{-- Kategori: Aktivitas Presensi --}}
+                <li class="sidebar-category-header">
+                    <span>Presensi &amp; Akademik</span>
                 </li>
                 <li class="{{ request()->is('admin/absensi*') ? 'active' : '' }}">
                     <a href="{{ url('/admin/absensi') }}">
@@ -650,8 +882,17 @@
                         <span>Absensi &amp; Jurnal Mengajar</span>
                     </a>
                 </li>
+                <li class="{{ request()->is('admin/jadwal*') ? 'active' : '' }}">
+                    <a href="{{ url('/admin/jadwal') }}">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Jadwal Pelajaran</span>
+                    </a>
+                </li>
 
-                {{-- Master Data Accordion --}}
+                {{-- Kategori: Master Data --}}
+                <li class="sidebar-category-header">
+                    <span>Data Master</span>
+                </li>
                 <li>
                     <button
                         class="sidebar-accordion-toggle {{ request()->is('admin/master*') ? 'open' : '' }}"
@@ -664,6 +905,12 @@
                         <i class="fa-solid fa-chevron-down chevron"></i>
                     </button>
                     <ul class="sidebar-submenu {{ request()->is('admin/master*') ? 'open' : '' }}" id="masterSubmenu">
+                        <li class="{{ request()->is('admin/master/user*') ? 'active' : '' }}">
+                            <a href="{{ url('/admin/master/user') }}">
+                                <i class="fa-solid fa-user-gear"></i>
+                                <span>Manajemen User</span>
+                            </a>
+                        </li>
                         <li class="{{ request()->is('admin/master/siswa*') ? 'active' : '' }}">
                             <a href="{{ url('/admin/master/siswa') }}">
                                 <i class="fa-solid fa-users"></i>
@@ -688,13 +935,23 @@
                                 <span>Manajemen Kelas</span>
                             </a>
                         </li>
+                        <li class="{{ request()->is('admin/master/mapel*') ? 'active' : '' }}">
+                            <a href="{{ url('/admin/master/mapel') }}">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span>Manajemen Mapel</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
+                {{-- Kategori: Laporan --}}
+                <li class="sidebar-category-header">
+                    <span>Pusat Laporan</span>
+                </li>
                 <li class="{{ request()->is('admin/laporan*') ? 'active' : '' }}">
                     <a href="{{ url('/admin/laporan') }}">
                         <i class="fa-solid fa-book"></i>
-                        <span>Laporan</span>
+                        <span>Laporan Rekap</span>
                     </a>
                 </li>
             </ul>
@@ -721,10 +978,39 @@
                 <p>@yield('header_subtitle', 'Jurnal Absensi Guru & Siswa SMKN 1 BOYOLANGU')</p>
             </div>
             <div class="header-user-nav">
-                <div class="notif-bell">
-                    <i class="fa-regular fa-bell" style="font-size: 20px;"></i>
-                    <span class="notif-badge"></span>
+                {{-- Interactive Notification Dropdown --}}
+                <div class="notif-dropdown-wrap" id="notifDropdownWrap">
+                    <div class="notif-bell" id="notifBellBtn" onclick="toggleNotifDropdown()">
+                        <i class="fa-solid fa-bell" style="font-size: 19px;"></i>
+                        <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+                    </div>
+
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <div class="notif-header-title">
+                                <i class="fa-solid fa-bell" style="color: #2b43b9;"></i>
+                                <span>Notifikasi</span>
+                                <span class="notif-count-pill" id="notifCountPill">0 Baru</span>
+                            </div>
+                            <button type="button" class="notif-btn-read-all" onclick="markAllNotificationsRead()" id="btnMarkAllRead">
+                                <i class="fa-solid fa-check-double"></i> Tandai Dibaca
+                            </button>
+                        </div>
+                        <div class="notif-body" id="notifListContainer">
+                            <div class="notif-empty">
+                                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 24px; color: #2b43b9;"></i>
+                                <span>Memuat notifikasi...</span>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <span style="color: #94a3b8; font-size: 11px; font-weight: 600;">
+                                <i class="fa-solid fa-shield-halved" style="color: #10b981; margin-right: 4px;"></i> Notifikasi Terpadu SMKN 1 Boyolangu
+                            </span>
+                        </div>
+                    </div>
                 </div>
+
+                {{-- User Profile Dropdown --}}
                 <div class="profile-dropdown-wrap" id="profileDropdownWrap">
                     <div class="user-profile-badge" onclick="toggleProfileDropdown()">
                         <img src="{{ Auth::user()->photo ? Storage::url(Auth::user()->photo) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name ?? 'Admin').'&background=ffffff&color=2b43b9&bold=true' }}" alt="Avatar" class="avatar-img">
@@ -760,6 +1046,8 @@
 
     @yield('scripts')
 <script>
+    const CSRF_TOKEN = '{{ csrf_token() }}';
+
     function toggleMasterAccordion() {
         const btn = document.getElementById('masterAccordionBtn');
         const menu = document.getElementById('masterSubmenu');
@@ -768,6 +1056,7 @@
     }
 
     function toggleProfileDropdown() {
+        closeNotifDropdown();
         const dropdown = document.getElementById('profileDropdown');
         dropdown.classList.toggle('show');
     }
@@ -776,6 +1065,163 @@
         const dropdown = document.getElementById('profileDropdown');
         if (dropdown) dropdown.classList.remove('show');
     }
+
+    /* Notification System Logic */
+    function toggleNotifDropdown() {
+        closeProfileDropdown();
+        const dropdown = document.getElementById('notifDropdown');
+        const isShown = dropdown.classList.contains('show');
+        if (!isShown) {
+            dropdown.classList.add('show');
+            loadNotifications();
+        } else {
+            dropdown.classList.remove('show');
+        }
+    }
+
+    function closeNotifDropdown() {
+        const dropdown = document.getElementById('notifDropdown');
+        if (dropdown) dropdown.classList.remove('show');
+    }
+
+    function loadNotifications() {
+        fetch('{{ route("admin.notifikasi") }}', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                renderNotifications(data.items, data.unread_count);
+            }
+        })
+        .catch(err => {
+            console.error('Error loading notifications:', err);
+        });
+    }
+
+    function renderNotifications(items, unreadCount) {
+        const badge = document.getElementById('notifBadge');
+        const pill = document.getElementById('notifCountPill');
+        const container = document.getElementById('notifListContainer');
+
+        // Update Badge
+        if (unreadCount > 0) {
+            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            badge.style.display = 'flex';
+            pill.textContent = unreadCount + ' Baru';
+            pill.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+            pill.textContent = 'Semua Dibaca';
+            pill.style.background = '#e2e8f0';
+            pill.style.color = '#64748b';
+        }
+
+        if (!items || items.length === 0) {
+            container.innerHTML = `
+                <div class="notif-empty">
+                    <i class="fa-regular fa-bell-slash"></i>
+                    <span>Belum ada notifikasi baru</span>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        items.forEach(n => {
+            const meta = n.meta || {};
+            const isUnreadClass = !n.is_read ? 'unread' : '';
+            const unreadDot = !n.is_read ? '<span class="notif-unread-dot" title="Belum dibaca"></span>' : '';
+            
+            html += `
+                <div class="notif-item ${isUnreadClass}" onclick="handleNotifClick(${n.id}, '${meta.action_url || '#'}')">
+                    <div class="notif-icon-box" style="background: ${meta.gradient || '#2b43b9'};">
+                        <i class="${meta.icon || 'fa-solid fa-bell'}"></i>
+                    </div>
+                    <div class="notif-content">
+                        <div class="notif-title">${escapeHtml(n.judul)}</div>
+                        <div class="notif-desc">${escapeHtml(n.pesan)}</div>
+                        <div class="notif-meta-bar">
+                            <span class="notif-badge-tag" style="background: ${meta.bg_light || '#f1f5f9'}; color: ${meta.text_color || '#334155'};">
+                                ${meta.badge || 'Info'}
+                            </span>
+                            <span class="notif-time-txt">
+                                <i class="fa-regular fa-clock" style="font-size: 10px; margin-right: 2px;"></i>${n.time_ago}
+                            </span>
+                        </div>
+                    </div>
+                    ${unreadDot}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function handleNotifClick(notifId, actionUrl) {
+        fetch(`/admin/notifikasi/${notifId}/read`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': CSRF_TOKEN,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(() => {
+            if (actionUrl && actionUrl !== '#' && actionUrl !== '') {
+                window.location.href = actionUrl;
+            } else {
+                loadNotifications();
+            }
+        })
+        .catch(() => {
+            if (actionUrl && actionUrl !== '#') window.location.href = actionUrl;
+        });
+    }
+
+    function markAllNotificationsRead() {
+        const btn = document.getElementById('btnMarkAllRead');
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Menyimpan...';
+
+        fetch('{{ route("admin.notifikasi.read-all") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': CSRF_TOKEN,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(() => {
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Tandai Dibaca';
+            loadNotifications();
+        })
+        .catch(err => {
+            console.error('Error marking all as read:', err);
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Tandai Dibaca';
+        });
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Initialize notification badge on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadNotifications();
+    });
 
     function openLogoutModal() {
         const modal = document.getElementById('logoutModal');
@@ -787,19 +1233,25 @@
         if (modal) modal.classList.remove('show');
     }
 
-    // Close dropdown when clicking outside
+    // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
-        const wrap = document.getElementById('profileDropdownWrap');
-        if (wrap && !wrap.contains(e.target)) {
+        const profileWrap = document.getElementById('profileDropdownWrap');
+        if (profileWrap && !profileWrap.contains(e.target)) {
             closeProfileDropdown();
+        }
+
+        const notifWrap = document.getElementById('notifDropdownWrap');
+        if (notifWrap && !notifWrap.contains(e.target)) {
+            closeNotifDropdown();
         }
     });
 
-    // ESC key closes logout modal
+    // ESC key closes modals & dropdowns
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeLogoutModal();
             closeProfileDropdown();
+            closeNotifDropdown();
         }
     });
 </script>

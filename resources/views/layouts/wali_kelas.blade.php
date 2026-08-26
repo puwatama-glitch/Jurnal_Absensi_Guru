@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Dashboard Wali Kelas - SMKN 1 BOYOLANGU')</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f2f4f8;
+            color: #2b3674;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background-color: #f6f7fb;
+            border-right: 1px solid #e3e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 28px 20px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .sidebar-logo-img {
+            width: 46px;
+            height: 46px;
+            object-fit: contain;
+        }
+
+        .sidebar-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-title {
+            font-weight: 800;
+            font-size: 15px;
+            line-height: 1.2;
+            color: #1b2559;
+            letter-spacing: -0.2px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 11.5px;
+            color: #4338ca;
+            font-weight: 800;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+            background: #e0e7ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .sidebar-category-header {
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #94a3b8;
+            padding: 14px 14px 4px 14px;
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        .sidebar-category-header:first-child {
+            padding-top: 4px;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #6b7a99;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .sidebar-menu li.active a {
+            color: #2b43b9;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(43, 67, 185, 0.08);
+            font-weight: 700;
+        }
+
+        .sidebar-menu li.active a::before {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background-color: #2b43b9;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .sidebar-menu li a:hover:not(.active) {
+            background-color: #eaeff8;
+            color: #2b43b9;
+        }
+
+        .sidebar-menu li a i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            border-top: 1px solid #e3e8f0;
+            padding-top: 20px;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-bottom a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            color: #6b7a99;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .sidebar-bottom a.logout {
+            color: #e63946;
+        }
+
+        .sidebar-bottom a:hover {
+            background-color: #eaeff8;
+        }
+
+        .sidebar-bottom a.logout:hover {
+            background-color: #ffeef0;
+        }
+
+        .sidebar-bottom a.help-link {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            padding: 7px 16px;
+            gap: 10px;
+            line-height: 1.35;
+        }
+
+        .sidebar-bottom a.help-link i {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* Main Content Wrapper */
+        .main-wrapper {
+            flex: 1;
+            padding: 24px 32px;
+            overflow-y: auto;
+        }
+
+        /* Header Card Banner */
+        .top-header-banner {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            border-radius: 20px;
+            padding: 24px 32px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 24px rgba(30, 58, 138, 0.22);
+            margin-bottom: 24px;
+            animation: fadeInSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .header-title-box h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title-box p {
+            font-size: 14px;
+            opacity: 0.85;
+            font-weight: 500;
+        }
+
+        .header-user-nav {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        /* Class Pill in Header */
+        .header-kelas-pill {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-kelas-pill i { font-size: 16px; color: #a5b4fc; }
+        .header-kelas-title { font-size: 11px; font-weight: 700; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-kelas-name { font-size: 14px; font-weight: 900; }
+
+        /* Notification Dropdown & Bell */
+        .notif-dropdown-wrap { position: relative; }
+        .notif-bell {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1b2559;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+        .notif-bell:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            background: #ffffff;
+            color: #2b43b9;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            min-width: 19px;
+            height: 19px;
+            padding: 0 5px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 10px;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+        }
+
+        .notif-dropdown {
+            position: absolute;
+            top: 56px;
+            right: 0;
+            width: 380px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(226, 232, 240, 0.8);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9999;
+            animation: fadeInSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .notif-dropdown.show { display: flex; }
+
+        .notif-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .notif-header-title { font-size: 15px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+        .notif-count-pill { font-size: 11px; font-weight: 700; padding: 2px 8px; background: #fee2e2; color: #dc2626; border-radius: 20px; }
+        .notif-btn-read-all { background: none; border: none; color: #2b43b9; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+        .notif-body { max-height: 360px; overflow-y: auto; }
+        .notif-empty { padding: 36px 20px; text-align: center; color: #64748b; font-size: 13px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .notif-footer { padding: 10px 16px; background: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center; }
+
+        /* Profile Dropdown */
+        .profile-dropdown-wrap { position: relative; }
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 16px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            user-select: none;
+        }
+        .avatar-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s ease;
+        }
+        .user-profile-badge:hover .avatar-img { transform: scale(1.06); }
+        .user-info-text { display: flex; flex-direction: column; }
+        .user-name { font-weight: 700; font-size: 14.5px; color: white; }
+        .user-email { font-size: 11.5px; opacity: 0.75; }
+
+        .profile-dropdown {
+            position: absolute;
+            top: calc(100% + 14px);
+            right: 0;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.14);
+            border: 1px solid #e2e8f0;
+            min-width: 220px;
+            padding: 8px;
+            display: none;
+            z-index: 9999;
+            animation: dropIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .profile-dropdown.show { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .dropdown-header { padding: 12px 14px 10px; border-bottom: 1px solid #f1f5f9; margin-bottom: 6px; }
+        .dropdown-header .d-name { font-size: 14px; font-weight: 800; color: #0f172a; }
+        .dropdown-header .d-email { font-size: 12px; color: #64748b; font-weight: 600; margin-top: 2px; }
+        .dropdown-header .d-role {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #334155;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .dropdown-item:hover { background: #f8fafc; color: #2b43b9; }
+        .dropdown-item i { width: 18px; text-align: center; font-size: 14px; }
+        .dropdown-item.danger { color: #dc2626; }
+        .dropdown-item.danger:hover { background: #fff5f5; color: #b91c1c; }
+        .dropdown-divider { height: 1px; background: #f1f5f9; margin: 6px 0; }
+
+        /* Logout Modal */
+        .logout-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .logout-modal-backdrop.show { opacity: 1; visibility: visible; }
+        .logout-modal-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px 28px 28px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            border: 1px solid #e2e8f0;
+            transform: scale(0.85) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .logout-modal-backdrop.show .logout-modal-card { transform: scale(1) translateY(0); }
+        .logout-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecdd3 100%);
+            color: #ef4444;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
+        }
+        .logout-modal-title { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+        .logout-modal-desc { font-size: 13.5px; color: #64748b; font-weight: 500; line-height: 1.5; margin-bottom: 24px; }
+        .logout-modal-actions { display: flex; gap: 12px; }
+        .btn-cancel-logout {
+            flex: 1;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-cancel-logout:hover { background: #e2e8f0; }
+        .btn-confirm-logout {
+            flex: 1;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInSlideDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    @yield('styles')
+</head>
+<body>
+
+    <!-- Logout Form -->
+    <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display:none;">
+        @csrf
+    </form>
+
+    <!-- Logout Modal -->
+    <div class="logout-modal-backdrop" id="logoutModal" onclick="if(event.target === this) closeLogoutModal()">
+        <div class="logout-modal-card">
+            <div class="logout-icon-wrap">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h3 class="logout-modal-title">Konfirmasi Keluar</h3>
+            <p class="logout-modal-desc">Apakah Anda yakin ingin keluar dari akun Wali Kelas Jurnal Absensi SMKN 1 Boyolangu?</p>
+            <div class="logout-modal-actions">
+                <button type="button" class="btn-cancel-logout" onclick="closeLogoutModal()">Batal</button>
+                <button type="button" class="btn-confirm-logout" onclick="document.getElementById('logout-form').submit()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Ya, Keluar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar-brand">
+                <img src="{{ asset('asset/logo.png') }}" alt="Logo Jurnal Absensi" class="sidebar-logo-img">
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-title">JURNAL ABSENSI</span>
+                    <span class="sidebar-subtitle"><i class="fa-solid fa-chalkboard-user"></i> WALI KELAS</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="sidebar-category-header">
+                    <span>Menu Kelas Binaan</span>
+                </li>
+                <li class="{{ request()->routeIs('wali-kelas.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('wali-kelas.dashboard') }}">
+                        <i class="fa-solid fa-border-all"></i>
+                        <span>Dashboard Kelas</span>
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('wali-kelas.jurnal') ? 'active' : '' }}">
+                    <a href="{{ route('wali-kelas.jurnal') }}">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Jurnal &amp; Presensi</span>
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('wali-kelas.siswa') ? 'active' : '' }}">
+                    <a href="{{ route('wali-kelas.siswa') }}">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Data Siswa Kelas</span>
+                    </a>
+                </li>
+
+                @if(Auth::user()->role === 'admin')
+                <li class="sidebar-category-header">
+                    <span>Akses Administrator</span>
+                </li>
+                <li>
+                    <a href="{{ route('admin.dashboard') }}" style="color: #4f46e5;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Kembali ke Admin</span>
+                    </a>
+                </li>
+                @endif
+            </ul>
+        </div>
+
+        <div class="sidebar-bottom">
+            <a href="{{ route('admin.help') }}" class="help-link">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Panduan Wali Kelas</span>
+            </a>
+            <a href="#" class="logout" onclick="openLogoutModal(); return false;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Log out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <!-- Top Header Card -->
+        <header class="top-header-banner">
+            <div class="header-title-box">
+                <h1>@yield('header_title', 'Dashboard Wali Kelas')</h1>
+                <p>@yield('header_subtitle', 'Pantau kehadiran siswa & jurnal mengajar kelas binaan')</p>
+            </div>
+            <div class="header-user-nav">
+                @yield('header_extra')
+
+                {{-- Notification Bell --}}
+                <div class="notif-dropdown-wrap" id="notifDropdownWrap">
+                    <div class="notif-bell" id="notifBellBtn" onclick="toggleNotifDropdown()">
+                        <i class="fa-solid fa-bell" style="font-size: 19px;"></i>
+                        <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+                    </div>
+
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <div class="notif-header-title">
+                                <i class="fa-solid fa-bell" style="color: #2b43b9;"></i>
+                                <span>Notifikasi</span>
+                                <span class="notif-count-pill" id="notifCountPill">0 Baru</span>
+                            </div>
+                            <button type="button" class="notif-btn-read-all" onclick="markAllNotificationsRead()" id="btnMarkAllRead">
+                                <i class="fa-solid fa-check-double"></i> Tandai Dibaca
+                            </button>
+                        </div>
+                        <div class="notif-body" id="notifListContainer">
+                            <div class="notif-empty">
+                                <i class="fa-regular fa-bell-slash" style="font-size: 32px; color: #cbd5e1;"></i>
+                                <span>Belum ada notifikasi baru</span>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <span style="color: #94a3b8; font-size: 11px; font-weight: 600;">
+                                <i class="fa-solid fa-shield-halved" style="color: #10b981; margin-right: 4px;"></i> Notifikasi SMKN 1 Boyolangu
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- User Profile Dropdown --}}
+                <div class="profile-dropdown-wrap" id="profileDropdownWrap">
+                    <div class="user-profile-badge" onclick="toggleProfileDropdown()">
+                        <img src="{{ Auth::user()->photo ? Storage::url(Auth::user()->photo) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name ?? 'Wali Kelas').'&background=e0e7ff&color=3730a3&bold=true' }}" alt="Avatar" class="avatar-img">
+                        <div class="user-info-text">
+                            <span class="user-name">{{ Auth::user()->name ?? 'Wali Kelas' }}</span>
+                            <span class="user-email">{{ Auth::user()->email }}</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="dropdown-header">
+                            <div class="d-name">{{ Auth::user()->name ?? 'Wali Kelas' }}</div>
+                            <div class="d-email">{{ Auth::user()->email }}</div>
+                            <span class="d-role">Wali Kelas</span>
+                        </div>
+
+                        <a href="{{ route('admin.profil') }}" class="dropdown-item">
+                            <i class="fa-solid fa-user-pen"></i> Profil Saya
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <button type="button" onclick="closeProfileDropdown(); openLogoutModal();" class="dropdown-item danger" style="width:100%;background:none;border:none;font-family:inherit;text-align:left;">
+                            <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        @yield('content')
+    </main>
+
+    @yield('scripts')
+<script>
+    const CSRF_TOKEN = '{{ csrf_token() }}';
+
+    function toggleProfileDropdown() {
+        closeNotifDropdown();
+        const dropdown = document.getElementById('profileDropdown');
+        dropdown.classList.toggle('show');
+    }
+
+    function closeProfileDropdown() {
+        const dropdown = document.getElementById('profileDropdown');
+        if (dropdown) dropdown.classList.remove('show');
+    }
+
+    function toggleNotifDropdown() {
+        closeProfileDropdown();
+        const dropdown = document.getElementById('notifDropdown');
+        dropdown.classList.toggle('show');
+    }
+
+    function closeNotifDropdown() {
+        const dropdown = document.getElementById('notifDropdown');
+        if (dropdown) dropdown.classList.remove('show');
+    }
+
+    function openLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        if (modal) modal.classList.add('show');
+    }
+
+    function closeLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        if (modal) modal.classList.remove('show');
+    }
+
+    document.addEventListener('click', function(e) {
+        const profileWrap = document.getElementById('profileDropdownWrap');
+        if (profileWrap && !profileWrap.contains(e.target)) {
+            closeProfileDropdown();
+        }
+        const notifWrap = document.getElementById('notifDropdownWrap');
+        if (notifWrap && !notifWrap.contains(e.target)) {
+            closeNotifDropdown();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLogoutModal();
+            closeProfileDropdown();
+            closeNotifDropdown();
+        }
+    });
+</script>
+</body>
+</html>

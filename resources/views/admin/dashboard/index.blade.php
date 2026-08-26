@@ -247,92 +247,135 @@
         padding-bottom: 0;
     }
 
+    .attention-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        background: #ffffff;
+    }
+
+    .attention-item:hover {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        transform: translateX(4px);
+    }
+
     .attention-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 15px;
         flex-shrink: 0;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
-    .attention-icon.red {
-        background-color: #ef4444;
-        color: white;
+    .attention-icon.danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
-    .attention-icon.orange {
-        background-color: #f97316;
-        color: white;
+    .attention-icon.warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
     }
 
-    .attention-icon.red-arrow {
-        background-color: #ef4444;
-        color: white;
+    .attention-icon.info {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .attention-icon.success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
     .attention-content {
         display: flex;
         flex-direction: column;
+        flex: 1;
     }
 
     .attention-head {
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 700;
-        color: #1b2559;
+        color: #0f172a;
+        line-height: 1.3;
     }
 
     .attention-sub {
-        font-size: 11px;
-        color: #94a3b8;
+        font-size: 12px;
+        color: #64748b;
         font-weight: 500;
-        margin-top: 2px;
+        margin-top: 3px;
     }
 
     .activity-item {
         display: flex;
         align-items: center;
         gap: 14px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid #f1f5f9;
+        padding: 10px 12px;
+        border-radius: 12px;
+        transition: background 0.15s ease;
     }
 
-    .activity-item:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
+    .activity-item:hover {
+        background: #f8fafc;
     }
 
     .activity-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background-color: #f1f5f9;
-        color: #475569;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        color: #3730a3;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-size: 15px;
         flex-shrink: 0;
+        box-shadow: 0 3px 8px rgba(43, 67, 185, 0.12);
     }
 
     .activity-content {
         display: flex;
         flex-direction: column;
+        flex: 1;
     }
 
     .activity-desc {
         font-size: 13px;
         font-weight: 700;
-        color: #1b2559;
+        color: #0f172a;
+        line-height: 1.3;
     }
 
     .activity-time {
-        font-size: 11px;
+        font-size: 11.5px;
         color: #94a3b8;
         font-weight: 500;
         margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .activity-tag {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        background: #f1f5f9;
+        color: #475569;
+        text-transform: uppercase;
     }
 </style>
 @endsection
@@ -454,57 +497,54 @@
     <!-- Perlu Perhatian -->
     <div class="widget-card">
         <h3 class="widget-title">
-            <i class="fa-solid fa-triangle-exclamation" style="color: #eab308;"></i>
+            <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i>
             <span>Perlu Perhatian</span>
         </h3>
         <div class="attention-list">
-            <div class="attention-item">
-                <div class="attention-icon red">
-                    <i class="fa-solid fa-xmark"></i>
+            @foreach($perluPerhatian as $item)
+            <a href="{{ $item['url'] ?? url('/admin/absensi') }}" class="attention-item" style="text-decoration: none;">
+                <div class="attention-icon {{ $item['type'] ?? 'info' }}">
+                    <i class="{{ $item['icon'] ?? 'fa-solid fa-bell' }}"></i>
                 </div>
                 <div class="attention-content">
-                    <span class="attention-head">3 siswa alpa berturut-turut</span>
-                    <span class="attention-sub">XII RPL 2 — sudah 3 hari tanpa keterangan</span>
+                    <span class="attention-head">{{ $item['title'] }}</span>
+                    <span class="attention-sub">{{ $item['subtitle'] }}</span>
                 </div>
-            </div>
-
-            <div class="attention-item">
-                <div class="attention-icon orange">
-                    <i class="fa-solid fa-bookmark"></i>
+                <div style="color: #cbd5e1; font-size: 12px; align-self: center;">
+                    <i class="fa-solid fa-chevron-right"></i>
                 </div>
-                <div class="attention-content">
-                    <span class="attention-head">14 jam pelajaran belum ada jurnal</span>
-                    <span class="attention-sub">Perlu tindak lanjut sebelum jam pulang</span>
-                </div>
-            </div>
-
-            <div class="attention-item">
-                <div class="attention-icon red-arrow">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </div>
-                <div class="attention-content">
-                    <span class="attention-head">Kehadiran XI TKJ 1 di bawah 80%</span>
-                    <span class="attention-sub">Hari ini hanya 76% siswa hadir</span>
-                </div>
-            </div>
+            </a>
+            @endforeach
         </div>
     </div>
 
     <!-- Aktivitas Terbaru -->
     <div class="widget-card">
-        <h3 class="widget-title">Aktivitas Terbaru</h3>
+        <h3 class="widget-title">
+            <i class="fa-solid fa-clock-rotate-left" style="color: #2b43b9;"></i>
+            <span>Aktivitas Terbaru</span>
+        </h3>
         <div class="activity-list">
-            @foreach($aktivitasTerbaru as $act)
+            @forelse($aktivitasTerbaru as $act)
             <div class="activity-item">
-                <div class="activity-avatar">
-                    <i class="fa-regular fa-user"></i>
+                <div class="activity-avatar" style="background: {{ $act['icon_bg'] ?? 'linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)' }}; color: {{ $act['icon_color'] ?? '#3730a3' }};">
+                    <i class="{{ $act['icon'] ?? 'fa-solid fa-bolt' }}"></i>
                 </div>
                 <div class="activity-content">
                     <span class="activity-desc">{{ $act['deskripsi'] }}</span>
-                    <span class="activity-time">{{ $act['waktu'] }} · {{ $act['tag'] }}</span>
+                    <div class="activity-time">
+                        <span><i class="fa-regular fa-clock" style="font-size: 10px;"></i> {{ $act['waktu'] }}</span>
+                        <span>·</span>
+                        <span class="activity-tag">{{ $act['tag'] }}</span>
+                    </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div style="padding: 24px 12px; text-align: center; color: #94a3b8; font-size: 13px;">
+                <i class="fa-solid fa-inbox" style="font-size: 24px; margin-bottom: 6px; display: block;"></i>
+                Belum ada catatan aktivitas baru.
+            </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -523,9 +563,9 @@
         new Chart(ctxTrend, {
             type: 'line',
             data: {
-                labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                labels: {!! json_encode($trend7Hari['labels']) !!},
                 datasets: [{
-                    data: [200, 780, 260, 520, 200, 480, 680],
+                    data: {!! json_encode($trend7Hari['data']) !!},
                     borderColor: '#2b43b9',
                     borderWidth: 3,
                     fill: true,
@@ -551,9 +591,8 @@
                     },
                     y: {
                         grid: { color: '#f1f5f9' },
-                        ticks: { display: false },
-                        min: 0,
-                        max: 900
+                        ticks: { color: '#94a3b8', font: { weight: '600', size: 10 } },
+                        beginAtZero: true
                     }
                 }
             }
@@ -566,11 +605,11 @@
             data: {
                 labels: ['Hadir', 'Izin/Sakit', 'Alpa'],
                 datasets: [{
-                    data: [{{ $pctHadir }}, {{ $pctIzinSakit }}, {{ 100 - $pctHadir - $pctIzinSakit }}],
+                    data: [{{ $pctHadir }}, {{ $pctIzinSakit }}, {{ $pctAlpa }}],
                     backgroundColor: [
                         '#1b2559',
                         '#10b981',
-                        '#00c49f'
+                        '#ef4444'
                     ],
                     borderWidth: 0,
                     hoverOffset: 4

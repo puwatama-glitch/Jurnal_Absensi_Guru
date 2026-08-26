@@ -2,7 +2,7 @@
 
 @section('title', 'Manajemen Guru — SMKN 1 BOYOLANGU')
 @section('header_title', 'Manajemen Guru')
-@section('header_subtitle', 'Kelola data induk guru — tambah, ubah, dan hapus data')
+@section('header_subtitle', 'Kelola data induk guru, jabatan/peran (Guru Mapel, Wali Kelas, Guru Piket), dan akun akses')
 
 @section('styles')
 <style>
@@ -100,7 +100,7 @@
         color: #0f172a;
         outline: none;
         transition: all 0.2s ease;
-        min-width: 200px;
+        min-width: 170px;
     }
     .filter-input:focus, .filter-select:focus {
         border-color: #2b43b9;
@@ -155,7 +155,7 @@
     .data-table th:last-child  { border-radius: 0 10px 10px 0; }
     
     .data-table td {
-        padding: 16px; font-size: 13.5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; transition: background 0.15s ease;
+        padding: 14px 16px; font-size: 13.5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; transition: background 0.15s ease;
     }
     .data-table tbody tr:hover td { background: #f8fafc; }
 
@@ -171,6 +171,15 @@
     
     .guru-name { font-weight: 700; color: #0f172a; font-size: 14px; }
     .guru-nip  { font-size: 11.5px; color: #64748b; font-weight: 600; margin-top: 1px; }
+
+    /* Role Badges */
+    .badge-role {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-weight: 800; font-size: 11.5px; padding: 5px 12px; border-radius: 20px;
+    }
+    .badge-role.wali-kelas  { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
+    .badge-role.guru-mapel  { background: #f1f5f9; color: #334155; }
+    .badge-role.guru-piket  { background: #fef3c7; color: #92400e; }
 
     .badge-status-aktif {
         display: inline-flex; align-items: center; gap: 6px;
@@ -217,7 +226,7 @@
     .modal-bd { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 9990; }
     .modal-bd.show { display: flex; }
     .modal-bx {
-        background: #ffffff; border-radius: 24px; width: 92%; max-width: 580px; max-height: 90vh; overflow-y: auto; padding: 28px;
+        background: #ffffff; border-radius: 24px; width: 92%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 28px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.2); animation: modalSlideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
     @keyframes modalSlideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
@@ -234,6 +243,7 @@
     .form-field-ctrl {
         background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 10px 14px;
         font-size: 13.5px; font-weight: 600; color: #0f172a; outline: none; width: 100%; transition: all 0.2s ease;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .form-field-ctrl:focus { border-color: #2b43b9; background: #ffffff; box-shadow: 0 0 0 3px rgba(43,67,185,0.1); }
 
@@ -276,27 +286,27 @@
         </div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-icon emerald"><i class="fa-solid fa-user-check"></i></div>
-        <div>
-            <div class="kpi-val">{{ $aktif }}</div>
-            <div class="kpi-lbl">Guru Status Aktif</div>
-            <div class="kpi-sub">Aktif mengajar kelas</div>
-        </div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-icon sky"><i class="fa-solid fa-user-tie"></i></div>
-        <div>
-            <div class="kpi-val">{{ $nonAktif }}</div>
-            <div class="kpi-lbl">Status Tidak Aktif</div>
-            <div class="kpi-sub">Nonaktif / Cuti</div>
-        </div>
-    </div>
-    <div class="kpi-card">
         <div class="kpi-icon violet"><i class="fa-solid fa-school-flag"></i></div>
         <div>
-            <div class="kpi-val">{{ $walikelas }}</div>
+            <div class="kpi-val">{{ $totalWaliKelas }}</div>
             <div class="kpi-lbl">Guru Wali Kelas</div>
-            <div class="kpi-sub">Bertanggung jawab rombel</div>
+            <div class="kpi-sub">Penanggung jawab rombel</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon emerald"><i class="fa-solid fa-book-open-reader"></i></div>
+        <div>
+            <div class="kpi-val">{{ $totalGuruMapel }}</div>
+            <div class="kpi-lbl">Guru Mata Pelajaran</div>
+            <div class="kpi-sub">Pengajar reguler</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon sky"><i class="fa-solid fa-user-clock"></i></div>
+        <div>
+            <div class="kpi-val">{{ $totalGuruPiket }}</div>
+            <div class="kpi-lbl">Guru Piket</div>
+            <div class="kpi-sub">Petugas piket harian</div>
         </div>
     </div>
 </div>
@@ -313,16 +323,25 @@
             </div>
         </div>
         <div class="filter-item">
-            <label class="filter-label">Status Guru</label>
+            <label class="filter-label">Jabatan / Status Peran</label>
+            <select name="role" class="filter-select" onchange="this.form.submit()">
+                <option value="all">Semua Jabatan Guru</option>
+                <option value="guru_mapel" {{ $role === 'guru_mapel' ? 'selected' : '' }}>Guru Mata Pelajaran</option>
+                <option value="wali_kelas" {{ $role === 'wali_kelas' ? 'selected' : '' }}>Guru Wali Kelas</option>
+                <option value="guru_piket" {{ $role === 'guru_piket' ? 'selected' : '' }}>Guru Piket</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="filter-label">Status Keaktifan</label>
             <select name="status" class="filter-select" onchange="this.form.submit()">
                 <option value="">Semua Status</option>
                 <option value="1" {{ $status === '1' ? 'selected' : '' }}>Aktif</option>
                 <option value="0" {{ $status === '0' ? 'selected' : '' }}>Tidak Aktif</option>
             </select>
         </div>
-        @if($search || ($status !== null && $status !== ''))
+        @if($search || ($status !== null && $status !== '') || ($role && $role !== 'all'))
             <a href="{{ route('admin.master.guru') }}" class="btn-filter-action" style="align-self:flex-end;">
-                <i class="fa-solid fa-xmark"></i> Reset Filter
+                <i class="fa-solid fa-xmark"></i> Reset
             </a>
         @endif
     </div>
@@ -350,6 +369,7 @@
             <tr>
                 <th style="width:48px;">#</th>
                 <th>Nama Guru &amp; NIP</th>
+                <th>Jabatan / Peran</th>
                 <th>Jenis Kelamin</th>
                 <th>No. HP</th>
                 <th>Akun Login Sistem</th>
@@ -359,6 +379,13 @@
         </thead>
         <tbody>
             @forelse($guruList as $i => $g)
+            @php
+                $userRole = $g->user->role ?? 'guru_mapel';
+                $kelasBinaan = ($userRole === 'wali_kelas' && $g->user && $g->user->waliKelas && $g->user->waliKelas->kelas)
+                    ? $g->user->waliKelas->kelas
+                    : null;
+                $assignedKelasId = $kelasBinaan ? $kelasBinaan->id_kelas : null;
+            @endphp
             <tr>
                 <td style="color:#94a3b8;font-weight:700;font-size:12px;">{{ $guruList->firstItem() + $i }}</td>
                 <td>
@@ -371,6 +398,22 @@
                             <div class="guru-nip">NIP: {{ $g->nip }}</div>
                         </div>
                     </div>
+                </td>
+                <td>
+                    @if($userRole === 'wali_kelas')
+                        <span class="badge-role wali-kelas">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            Wali Kelas {{ $kelasBinaan ? '— ' . $kelasBinaan->nama_kelas : '' }}
+                        </span>
+                    @elseif($userRole === 'guru_piket')
+                        <span class="badge-role guru-piket">
+                            <i class="fa-solid fa-user-clock"></i> Guru Piket
+                        </span>
+                    @else
+                        <span class="badge-role guru-mapel">
+                            <i class="fa-solid fa-book-open"></i> Guru Mapel
+                        </span>
+                    @endif
                 </td>
                 <td>
                     @if($g->jenis_kelamin === 'L')
@@ -399,7 +442,7 @@
                 </td>
                 <td>
                     <div class="action-btns-group" style="justify-content:center;">
-                        <button class="btn-table-edit" title="Edit Data" onclick="openEditModal({{ $g->id_guru }}, '{{ addslashes($g->nama_lengkap) }}', '{{ $g->nip }}', '{{ $g->jenis_kelamin }}', '{{ $g->no_hp }}', '{{ addslashes($g->alamat) }}', {{ $g->status_aktif ? 'true' : 'false' }})">
+                        <button class="btn-table-edit" title="Edit Data" onclick="openEditModal({{ $g->id_guru }}, '{{ addslashes($g->nama_lengkap) }}', '{{ $g->nip }}', '{{ $g->jenis_kelamin }}', '{{ $g->no_hp }}', '{{ addslashes($g->alamat ?? '') }}', {{ $g->status_aktif ? 'true' : 'false' }}, '{{ $userRole }}', '{{ $assignedKelasId }}', '{{ $g->user->email ?? '' }}')">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
                         <button class="btn-table-delete" title="Hapus Data" onclick="openDeleteModal({{ $g->id_guru }}, '{{ addslashes($g->nama_lengkap) }}')">
@@ -410,7 +453,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" style="text-align:center;padding:54px 20px;color:#94a3b8;">
+                <td colspan="8" style="text-align:center;padding:54px 20px;color:#94a3b8;">
                     <i class="fa-solid fa-chalkboard-user" style="font-size:46px;margin-bottom:14px;color:#cbd5e1;"></i>
                     <p style="font-size:16px;font-weight:800;color:#0f172a;">Tidak ada data guru ditemukan</p>
                     <p style="font-size:13px;margin-top:4px;color:#64748b;">Coba ubah kata kunci pencarian atau tambah guru baru.</p>
@@ -420,7 +463,8 @@
         </tbody>
     </table>
 
-    {{-- Pagination --}}
+    {{-- Custom Pagination Pills --}}
+    @if($guruList->hasPages())
     <div class="pagination-container">
         <span class="pag-text">
             Menampilkan {{ $guruList->firstItem() ?? 0 }}–{{ $guruList->lastItem() ?? 0 }} dari {{ $guruList->total() }} guru
@@ -447,6 +491,7 @@
             @endif
         </div>
     </div>
+    @endif
 </div>
 
 {{-- Add / Edit Modal --}}
@@ -485,7 +530,7 @@
                     <input type="text" name="no_hp" id="f_hp" class="form-field-ctrl" placeholder="08xxxxxxxxxx">
                 </div>
                 <div class="form-group-item">
-                    <label class="form-field-lbl">Status Guru</label>
+                    <label class="form-field-lbl">Status Keaktifan</label>
                     <select name="status_aktif" id="f_status" class="form-field-ctrl">
                         <option value="1">Aktif</option>
                         <option value="0">Tidak Aktif</option>
@@ -496,18 +541,43 @@
                     <textarea name="alamat" id="f_alamat" class="form-field-ctrl" rows="2" placeholder="Alamat rumah guru"></textarea>
                 </div>
 
+                {{-- Role / Status Jabatan Guru --}}
+                <hr class="form-divider">
+                <div class="form-section-title">Jabatan / Status Peran Guru</div>
+
+                <div class="form-group-item full-width">
+                    <label class="form-field-lbl">Status Jabatan Guru <span style="color:#ef4444">*</span></label>
+                    <select name="role" id="f_role" class="form-field-ctrl" required onchange="handleGuruRoleChange(this.value)">
+                        <option value="guru_mapel">Guru Mata Pelajaran</option>
+                        <option value="wali_kelas">Guru Wali Kelas</option>
+                        <option value="guru_piket">Guru Piket</option>
+                    </select>
+                    <span class="form-field-hint">Pilih peran guru untuk menentukan hak akses dashboard dan tugas mengajar.</span>
+                </div>
+
+                <div class="form-group-item full-width" id="kelasField" style="display:none;">
+                    <label class="form-field-lbl">Tugaskan Sebagai Wali Kelas Untuk: <span style="color:#ef4444">*</span></label>
+                    <select name="id_kelas" id="f_id_kelas" class="form-field-ctrl">
+                        <option value="">-- Pilih Kelas Binaan --</option>
+                        @foreach($kelasList as $k)
+                            <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }} ({{ $k->jurusan }})</option>
+                        @endforeach
+                    </select>
+                    <span class="form-field-hint">Pilih kelas yang dibina oleh guru ini.</span>
+                </div>
+
                 {{-- Account login section --}}
                 <hr class="form-divider" id="loginDivider">
                 <div class="form-section-title" id="loginSectionLabel">Akun Akses Sistem (Opsional)</div>
                 <div class="form-group-item" id="emailField">
                     <label class="form-field-lbl">Email Login</label>
                     <input type="email" name="email" id="f_email" class="form-field-ctrl" placeholder="email@smkn1boyolangu.sch.id">
-                    <span class="form-field-hint">Kosongkan jika tidak perlu akun login.</span>
+                    <span class="form-field-hint">Kosongkan untuk auto-generate dari NIP.</span>
                 </div>
                 <div class="form-group-item" id="passField">
                     <label class="form-field-lbl">Password Akses</label>
-                    <input type="password" name="password" id="f_pass" class="form-field-ctrl" placeholder="Min. 8 karakter">
-                    <span class="form-field-hint">Password default: password</span>
+                    <input type="password" name="password" id="f_pass" class="form-field-ctrl" placeholder="Min. 6 karakter">
+                    <span class="form-field-hint">Default password: password</span>
                 </div>
             </div>
 
@@ -553,6 +623,17 @@
 
     function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
+    function handleGuruRoleChange(role) {
+        const kelasField = document.getElementById('kelasField');
+        if (role === 'wali_kelas') {
+            kelasField.style.display = 'flex';
+            document.getElementById('f_id_kelas').setAttribute('required', 'required');
+        } else {
+            kelasField.style.display = 'none';
+            document.getElementById('f_id_kelas').removeAttribute('required');
+        }
+    }
+
     function openAddModal() {
         document.getElementById('modalTitle').innerText = 'Tambah Guru Baru';
         document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-plus"></i> Simpan Data';
@@ -560,14 +641,12 @@
         form.action = '{{ route("admin.master.guru.store") }}';
         document.getElementById('methodField').innerHTML = '';
         form.reset();
-        document.getElementById('loginDivider').style.display = '';
-        document.getElementById('loginSectionLabel').style.display = '';
-        document.getElementById('emailField').style.display = '';
-        document.getElementById('passField').style.display = '';
+        document.getElementById('f_role').value = 'guru_mapel';
+        handleGuruRoleChange('guru_mapel');
         document.getElementById('guruModal').classList.add('show');
     }
 
-    function openEditModal(id, nama, nip, jk, hp, alamat, aktif) {
+    function openEditModal(id, nama, nip, jk, hp, alamat, aktif, role, idKelas, email) {
         document.getElementById('modalTitle').innerText = 'Edit Data Guru';
         document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Perbarui Data';
         const form = document.getElementById('guruForm');
@@ -580,11 +659,14 @@
         document.getElementById('f_hp').value     = hp;
         document.getElementById('f_alamat').value = alamat;
         document.getElementById('f_status').value = aktif ? '1' : '0';
+        document.getElementById('f_role').value   = role || 'guru_mapel';
+        document.getElementById('f_email').value  = email || '';
+        document.getElementById('f_pass').value   = '';
 
-        document.getElementById('loginDivider').style.display = 'none';
-        document.getElementById('loginSectionLabel').style.display = 'none';
-        document.getElementById('emailField').style.display = 'none';
-        document.getElementById('passField').style.display = 'none';
+        handleGuruRoleChange(role || 'guru_mapel');
+        if (idKelas) {
+            document.getElementById('f_id_kelas').value = idKelas;
+        }
 
         document.getElementById('guruModal').classList.add('show');
     }

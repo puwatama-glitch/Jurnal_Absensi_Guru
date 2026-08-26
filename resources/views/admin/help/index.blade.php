@@ -455,10 +455,10 @@
         <p>Hubungi Tim IT &amp; Administrator Sistem SMKN 1 Boyolangu untuk bantuan langsung.</p>
     </div>
     <div class="support-actions">
-        <a href="mailto:admin@smkn1boyolangu.sch.id" class="btn-support secondary">
+        <a href="mailto:puwatama@gmail.com" class="btn-support secondary">
             <i class="fa-solid fa-envelope"></i> Email IT
         </a>
-        <a href="https://wa.me/6281234567890?text=Halo%20Tim%20IT%20SMKN%201%20Boyolangu,%20saya%20butuh%20bantuan%20sistem%20Jurnal%20Absensi" target="_blank" rel="noopener" class="btn-support primary">
+        <a href="https://wa.me/6283827774389?text=Halo%20Tim%20IT%20SMKN%201%20Boyolangu,%20saya%20butuh%20bantuan%20sistem%20Jurnal%20Absensi" target="_blank" rel="noopener" class="btn-support primary">
             <i class="fa-brands fa-whatsapp"></i> Hubungi via WhatsApp
         </a>
     </div>
