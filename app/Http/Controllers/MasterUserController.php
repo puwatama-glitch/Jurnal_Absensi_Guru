@@ -234,12 +234,29 @@ class MasterUserController extends Controller
 
         $user->update($updateData);
 
+        $cleanName = trim(preg_replace('/\s*\([^)]*\)$/', '', $validated['name']));
+
         // Update related profile name if exists
         if ($user->guru) {
-            $user->guru->update(['nama_lengkap' => $validated['name']]);
+            $user->guru->update(['nama_lengkap' => $cleanName]);
         }
         if ($user->admin) {
-            $user->admin->update(['nama_lengkap' => $validated['name']]);
+            $user->admin->update(['nama_lengkap' => $cleanName]);
+        }
+        if ($user->kepalaSekolah) {
+            $user->kepalaSekolah->update(['nama_lengkap' => $cleanName]);
+        }
+        if ($user->waka) {
+            $user->waka->update(['nama_lengkap' => $cleanName]);
+        }
+        if ($user->satpam) {
+            $user->satpam->update(['nama_lengkap' => $cleanName]);
+        }
+        if ($user->waliKelas) {
+            $user->waliKelas->update(['nama_lengkap' => $cleanName]);
+        }
+        if ($user->guruPiket) {
+            $user->guruPiket->update(['nama_lengkap' => $cleanName]);
         }
 
         return redirect()->route('admin.master.user')->with('success', "Data pengguna {$user->name} berhasil diperbarui.");

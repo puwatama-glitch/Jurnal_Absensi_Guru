@@ -113,12 +113,14 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             case 'wali_kelas':
                 return redirect()->route('wali-kelas.dashboard');
-            case 'guru_mapel':
-                return redirect()->route('jurnal.create');
             case 'guru_piket':
+                return redirect()->route('guru-piket.dashboard');
+            case 'guru_mapel':
+                return redirect()->route('guru-mapel.dashboard');
+            case 'satpam':
+                return redirect()->route('satpam.dashboard');
             case 'kepala_sekolah':
             case 'waka':
-            case 'satpam':
             default:
                 return redirect()->route('jurnal.index');
         }

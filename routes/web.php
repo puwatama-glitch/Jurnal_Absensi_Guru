@@ -16,6 +16,9 @@ use App\Http\Controllers\AdminLaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\WaliKelasDashboardController;
+use App\Http\Controllers\GuruPiketDashboardController;
+use App\Http\Controllers\GuruMapelDashboardController;
+use App\Http\Controllers\SatpamDashboardController;
 
 Route::get('/', function () {
     return redirect()->route('admin.dashboard');
@@ -106,6 +109,76 @@ Route::prefix('wali-kelas')->middleware('auth')->group(function () {
     Route::get('/dashboard', [WaliKelasDashboardController::class, 'index'])->name('wali-kelas.dashboard');
     Route::get('/siswa', [WaliKelasDashboardController::class, 'siswa'])->name('wali-kelas.siswa');
     Route::get('/jurnal', [WaliKelasDashboardController::class, 'jurnal'])->name('wali-kelas.jurnal');
+});
+
+// Guru Piket Routes (auth protected)
+Route::prefix('guru-piket')->name('guru-piket.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [GuruPiketDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/monitoring-kelas', [GuruPiketDashboardController::class, 'monitoringKelas'])->name('monitoring');
+    
+    // Dispensasi Siswa
+    Route::get('/dispensasi', [GuruPiketDashboardController::class, 'dispensasi'])->name('dispensasi');
+    Route::post('/dispensasi', [GuruPiketDashboardController::class, 'storeDispensasi'])->name('dispensasi.store');
+    Route::post('/dispensasi/{id}/status', [GuruPiketDashboardController::class, 'updateDispensasiStatus'])->name('dispensasi.status');
+    Route::get('/dispensasi/{id}/cetak', [GuruPiketDashboardController::class, 'cetakDispensasi'])->name('dispensasi.cetak');
+    
+    // Izin Guru & Kelas Terdampak
+    Route::get('/izin-guru', [GuruPiketDashboardController::class, 'izinGuru'])->name('izin-guru');
+    
+    // Rekap Presensi Siswa Se-Sekolah
+    Route::get('/rekap-presensi', [GuruPiketDashboardController::class, 'rekapPresensi'])->name('rekap');
+    
+    // Catatan & Laporan Harian Piket
+    Route::get('/laporan', [GuruPiketDashboardController::class, 'laporan'])->name('laporan');
+    Route::post('/laporan', [GuruPiketDashboardController::class, 'storeLaporan'])->name('laporan.store');
+    Route::get('/laporan/cetak', [GuruPiketDashboardController::class, 'cetakLaporan'])->name('laporan.cetak');
+    
+    // Panduan Piket
+    Route::get('/help', [GuruPiketDashboardController::class, 'help'])->name('help');
+});
+
+// Guru Mapel Routes (auth protected)
+Route::prefix('guru-mapel')->name('guru-mapel.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [GuruMapelDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/jadwal', [GuruMapelDashboardController::class, 'jadwal'])->name('jadwal');
+    
+    // Jurnal Mengajar & Presensi
+    Route::get('/jurnal/create', [GuruMapelDashboardController::class, 'createJurnal'])->name('jurnal.create');
+    Route::post('/jurnal', [GuruMapelDashboardController::class, 'storeJurnal'])->name('jurnal.store');
+    Route::get('/jurnal/riwayat', [GuruMapelDashboardController::class, 'riwayatJurnal'])->name('jurnal.riwayat');
+    Route::get('/jurnal/{id}', [GuruMapelDashboardController::class, 'showJurnal'])->name('jurnal.show');
+    
+    // Rekap Presensi Siswa Mapel
+    Route::get('/rekap', [GuruMapelDashboardController::class, 'rekapPresensi'])->name('rekap');
+    
+    // Izin Tidak Mengajar
+    Route::get('/izin', [GuruMapelDashboardController::class, 'izin'])->name('izin');
+    Route::post('/izin', [GuruMapelDashboardController::class, 'storeIzin'])->name('izin.store');
+    
+    // Panduan Guru Mapel
+    Route::get('/help', [GuruMapelDashboardController::class, 'help'])->name('help');
+});
+
+// Satpam / Pos Jaga Routes (auth protected)
+Route::prefix('satpam')->name('satpam.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [SatpamDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/monitoring', [SatpamDashboardController::class, 'monitoring'])->name('monitoring');
+    
+    // Verifikasi & Konfirmasi Dispensasi
+    Route::get('/dispensasi', [SatpamDashboardController::class, 'dispensasi'])->name('dispensasi');
+    Route::post('/dispensasi/{id}/status', [SatpamDashboardController::class, 'updateStatusDispensasi'])->name('dispensasi.status');
+    
+    // Buku Tamu Digital
+    Route::get('/buku-tamu', [SatpamDashboardController::class, 'bukuTamu'])->name('buku-tamu');
+    Route::post('/buku-tamu', [SatpamDashboardController::class, 'storeBukuTamu'])->name('buku-tamu.store');
+    Route::post('/buku-tamu/{id}/checkout', [SatpamDashboardController::class, 'checkoutBukuTamu'])->name('buku-tamu.checkout');
+    
+    // Riwayat & Cetak Log Pos Jaga
+    Route::get('/riwayat', [SatpamDashboardController::class, 'riwayat'])->name('riwayat');
+    Route::get('/riwayat/cetak', [SatpamDashboardController::class, 'cetakLaporan'])->name('riwayat.cetak');
+    
+    // Panduan Satpam Gate
+    Route::get('/help', [SatpamDashboardController::class, 'help'])->name('help');
 });
 
 Route::resource('jurnal', JurnalMengajarController::class);
