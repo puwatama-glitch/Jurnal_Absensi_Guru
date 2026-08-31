@@ -298,6 +298,39 @@
         .stats-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 768px) {
+        .greeting-title { font-size: 18px; }
+        .greeting-subtitle { font-size: 12.5px; }
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            padding: 14px 16px;
+            border-radius: 14px;
+        }
+        .stat-value {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        .btn-action-primary, .btn-action-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+        .section-card {
+            padding: 16px;
+            border-radius: 14px;
+        }
+    }
+    @media (max-width: 480px) {
         .stats-grid { grid-template-columns: 1fr; }
     }
 </style>

@@ -93,6 +93,11 @@
     @media (max-width: 1024px) {
         .two-cols-layout { grid-template-columns: 1fr; }
     }
+    @media (max-width: 576px) {
+        .form-row { grid-template-columns: 1fr; }
+        .section-card { padding: 16px; border-radius: 14px; }
+        .btn-submit { width: 100%; justify-content: center; }
+    }
 </style>
 @endsection
 
@@ -150,7 +155,7 @@
             </div>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrap">
             <table class="custom-table">
                 <thead>
                     <tr>

@@ -181,7 +181,20 @@
         outline: none;
     }
     .form-control:focus { border-color: #2b43b9; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .filter-card { flex-direction: column; align-items: stretch; padding: 16px; }
+        .filter-group { flex-direction: column; align-items: stretch; }
+        .filter-select, .filter-input { width: 100%; }
+        .form-row { grid-template-columns: 1fr; }
+        .section-card { padding: 16px; border-radius: 14px; }
+        .custom-modal-card { width: 100%; max-width: 100%; margin: 8px; }
+    }
     .modal-footer {
         padding: 16px 24px;
         border-top: 1px solid #f1f5f9;
@@ -234,7 +247,7 @@
 
 <!-- Table Card -->
 <div class="section-card">
-    <div style="overflow-x: auto;">
+    <div class="table-responsive-wrap">
         <table class="custom-table">
             <thead>
                 <tr>

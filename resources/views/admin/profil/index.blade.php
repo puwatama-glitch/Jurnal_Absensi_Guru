@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -428,6 +428,24 @@
             background: #ef4444;
             color: #ffffff;
             border-color: #ef4444;
+        }
+
+        /* ── Mobile Responsive Media Queries ── */
+        @media (max-width: 900px) {
+            .topbar { padding: 0 16px; height: 62px; }
+            .topbar-right { display: none; }
+            .page-content { padding: 0 14px 40px; margin: 20px auto; }
+            .profil-grid { grid-template-columns: 1fr; gap: 18px; }
+            .card-section { padding: 20px 16px; border-radius: 18px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .toast { min-width: unset; width: calc(100vw - 32px); left: 16px; right: 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .topbar-title h1 { font-size: 15px; }
+            .btn-back { padding: 7px 12px; font-size: 12px; }
+            .btn-submit { width: 100%; justify-content: center; }
+            .logout-modal-card { margin: 0 12px; padding: 24px 18px; max-width: calc(100vw - 24px); }
         }
     </style>
 </head>

@@ -127,6 +127,15 @@
         gap: 6px;
         text-decoration: none;
     }
+
+    @media (max-width: 768px) {
+        .category-tabs { flex-wrap: wrap; gap: 8px; }
+        .cat-tab-btn { flex: 1 1 calc(50% - 8px); justify-content: center; font-size: 12.5px; padding: 8px 12px; }
+        .filter-card { padding: 16px; }
+        .filter-form { flex-direction: column; align-items: stretch; }
+        .filter-input { width: 100%; }
+        .section-card { padding: 16px; border-radius: 14px; }
+    }
 </style>
 @endsection
 
@@ -166,7 +175,7 @@
 <!-- Table Card -->
 <div class="section-card">
     @if($tab === 'siswa')
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrap">
             <table class="custom-table">
                 <thead>
                     <tr>
@@ -216,7 +225,7 @@
             </table>
         </div>
     @else
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrap">
             <table class="custom-table">
                 <thead>
                     <tr>

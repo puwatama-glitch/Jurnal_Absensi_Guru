@@ -136,6 +136,13 @@
     @media (max-width: 900px) {
         .summary-pills-grid { grid-template-columns: repeat(3, 1fr); }
     }
+    @media (max-width: 576px) {
+        .summary-pills-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .filter-form { flex-direction: column; align-items: stretch; }
+        .filter-input, .filter-select { width: 100%; }
+        .btn-action-primary { width: 100%; justify-content: center; }
+        .section-card { padding: 16px; border-radius: 14px; }
+    }
 </style>
 @endsection
 
@@ -212,7 +219,7 @@
 
 <!-- Table Card -->
 <div class="section-card">
-    <div style="overflow-x: auto;">
+    <div class="table-responsive-wrap">
         <table class="custom-table">
             <thead>
                 <tr>

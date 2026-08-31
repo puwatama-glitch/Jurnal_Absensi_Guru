@@ -428,15 +428,48 @@ body {
     }
     .hero-panel {
         padding: 2.5rem 2rem;
-        min-height: 300px;
+        min-height: 260px;
     }
     .hero-title {
-        font-size: 2rem;
+        font-size: 1.85rem;
     }
     .hero-metrics {
         gap: 1.5rem;
     }
     .form-panel {
-        padding: 2rem 1.5rem;
+        padding: 2rem 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-panel {
+        padding: 1.5rem 1.25rem;
+        min-height: auto;
+    }
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    .hero-description {
+        font-size: 0.85rem;
+        display: none;
+    }
+    .hero-content {
+        padding: 1rem 0;
+    }
+    .hero-footer {
+        padding-top: 1rem;
+    }
+    .hero-metrics {
+        gap: 1rem;
+    }
+    .form-panel {
+        padding: 1.25rem 1rem;
+    }
+    .login-card {
+        padding: 1.5rem 1.25rem;
+        border-radius: 18px;
+    }
+    .card-title {
+        font-size: 1.25rem;
     }
 }

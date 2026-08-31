@@ -96,6 +96,11 @@
     @media (max-width: 1024px) {
         .two-cols-layout { grid-template-columns: 1fr; }
     }
+    @media (max-width: 768px) {
+        .filter-card { flex-direction: column; align-items: stretch; padding: 16px; }
+        .filter-input { width: 100%; }
+        .section-card { padding: 16px; border-radius: 14px; }
+    }
 </style>
 @endsection
 
@@ -122,7 +127,7 @@
             </div>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrap">
             <table class="custom-table">
                 <thead>
                     <tr>
@@ -174,7 +179,7 @@
             </div>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrap">
             <table class="custom-table">
                 <thead>
                     <tr>

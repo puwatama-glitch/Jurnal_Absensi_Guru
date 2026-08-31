@@ -364,6 +364,7 @@
         <span class="count-badge"><i class="fa-solid fa-chalkboard-user"></i> {{ $guruList->total() }} Guru Ditemukan</span>
     </div>
 
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -462,6 +463,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>{{-- end table-responsive-wrap --}}
 
     {{-- Custom Pagination Pills --}}
     @if($guruList->hasPages())

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
 
     <style>
         * {
@@ -468,20 +469,319 @@
         .btn-modal.confirm { background: #ef4444; color: white; }
         .btn-modal.confirm:hover { background: #dc2626; }
 
-        @media (max-width: 900px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; padding: 16px 20px; }
-            .main-wrapper { padding: 16px; }
-            .top-header-banner { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .header-user-nav { width: 100%; justify-content: space-between; }
+        /* ── Mobile Topbar & Responsive Drawer ── */
+        .mobile-topbar {
+            display: none;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            height: 62px;
+            padding: 0 16px;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 9980;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .mobile-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-sidebar-hamburger {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-sidebar-hamburger:hover {
+            background: #eaeff8;
+            color: #2b43b9;
+        }
+
+        .mobile-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mobile-logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+        .mobile-brand-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1b2559;
+            letter-spacing: -0.2px;
+        }
+
+        .mobile-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header-mobile {
+            display: none;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+        .btn-close-sidebar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: none;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+        .btn-close-sidebar:hover { background: #fee2e2; color: #ef4444; }
+
+        /* Backdrop */
+        .sidebar-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9988;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        /* Responsive Media Queries (<= 991px) */
+        @media (max-width: 991px) {
+            body {
+                flex-direction: column;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            .mobile-topbar {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 290px;
+                max-width: 86vw;
+                height: 100vh;
+                z-index: 9999;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+                background: #ffffff;
+                overflow-y: auto;
+                padding: 20px 16px;
+                display: flex;
+                flex-direction: column;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar-header-mobile {
+                display: flex;
+            }
+
+            .main-wrapper {
+                padding: 16px 14px;
+                width: 100%;
+                overflow-x: hidden;
+            }
+
+            .top-header-banner {
+                padding: 18px 20px;
+                border-radius: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+                margin-bottom: 18px;
+            }
+            .header-title-box h1 {
+                font-size: 22px;
+            }
+            .header-title-box p {
+                font-size: 13px;
+            }
+            .header-user-nav {
+                width: 100%;
+                justify-content: space-between;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255, 255, 255, 0.18);
+            }
+
+            .profile-dropdown {
+                width: calc(100vw - 32px);
+                max-width: 320px;
+                right: 0;
+            }
+        }
+
+        /* ── Extra Small Phones (< 480px) ── */
+        @media (max-width: 480px) {
+            .main-wrapper {
+                padding: 12px 10px;
+            }
+            .top-header-banner {
+                padding: 14px 16px;
+                border-radius: 14px;
+                gap: 12px;
+                margin-bottom: 14px;
+            }
+            .header-title-box h1 {
+                font-size: 18px;
+            }
+            .header-title-box p {
+                font-size: 12px;
+            }
+            .profile-dropdown {
+                width: calc(100vw - 20px);
+                right: -10px;
+                max-width: unset;
+            }
+            .logout-modal-card {
+                margin: 0 12px;
+                padding: 24px 20px 20px;
+                max-width: calc(100vw - 24px);
+            }
+        }
+
+        /* ── Global Responsive Utility Classes ── */
+        .table-responsive-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 0 0 12px 12px;
+        }
+        .table-responsive-wrap::-webkit-scrollbar { height: 4px; }
+        .table-responsive-wrap::-webkit-scrollbar-track { background: #f1f5f9; }
+        .table-responsive-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        @media (max-width: 768px) {
+            .kpi-grid, .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+            .charts-grid, .widgets-grid {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+            }
+            .page-action-card {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+                padding: 14px 16px !important;
+            }
+            .filter-group {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+            .filter-input, .filter-select {
+                min-width: unset !important;
+                width: 100% !important;
+            }
+            .data-table th, .data-table td {
+                padding: 10px 12px !important;
+                font-size: 12.5px !important;
+            }
+            .modal-bx, .modal-form-card {
+                width: 94% !important;
+                padding: 20px !important;
+                border-radius: 18px !important;
+            }
+            .form-grid-layout {
+                grid-template-columns: 1fr !important;
+            }
+            .pagination-container {
+                flex-direction: column !important;
+                gap: 10px !important;
+                align-items: flex-start !important;
+            }
+            .table-hdr {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+            }
+            .jadwal-grid, .rekap-grid {
+                grid-template-columns: 1fr !important;
+            }
+            /* Header pill di guru mapel */
+            .user-profile-badge .user-info-text {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-grid, .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .action-btns-group {
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+            }
         }
     </style>
     @yield('styles')
 </head>
 <body>
+
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar">
+        <div class="mobile-topbar-left">
+            <button type="button" class="btn-sidebar-hamburger" onclick="toggleMobileSidebar()" aria-label="Buka Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="mobile-brand">
+                <img src="{{ asset('asset/logo.png') }}" alt="Logo" class="mobile-logo-img">
+                <span class="mobile-brand-title">GURU MAPEL</span>
+            </div>
+        </div>
+        <div class="mobile-topbar-right">
+            <div id="mobileProfileTrigger" onclick="toggleProfileDropdown()" style="cursor:pointer;" role="button" aria-label="Profil">
+                <img src="{{ Auth::user()->photo ? Storage::url(Auth::user()->photo) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name ?? 'Guru Mapel').'&background=2b43b9&color=ffffff&bold=true' }}" alt="Avatar" style="width:36px;height:36px;border-radius:50%;border:2px solid #2b43b9;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Backdrop for Mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+
     <!-- Sidebar -->
     <aside class="sidebar">
         <div>
+            <div class="sidebar-header-mobile">
+                <button type="button" class="btn-close-sidebar" onclick="closeMobileSidebar()" aria-label="Tutup Menu">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
             <div class="sidebar-brand">
                 <img src="{{ asset('asset/logo.png') }}" alt="Logo Jurnal Absensi" class="sidebar-logo-img">
                 <div class="sidebar-brand-text">
@@ -646,6 +946,7 @@
     </div>
 
     @yield('scripts')
+    <script src="{{ asset('js/mobile-layout.js') }}"></script>
 
     <script>
         const CSRF_TOKEN = '{{ csrf_token() }}';
@@ -653,6 +954,9 @@
         function toggleProfileDropdown() {
             const dropdown = document.getElementById('profileDropdown');
             dropdown.classList.toggle('show');
+            if (dropdown.classList.contains('show') && typeof positionMobileDropdowns === 'function') {
+                positionMobileDropdowns();
+            }
         }
 
         function closeProfileDropdown() {
@@ -671,16 +975,37 @@
         }
 
         document.addEventListener('click', function(e) {
-            const profileWrap = document.getElementById('profileDropdownWrap');
-            if (profileWrap && !profileWrap.contains(e.target)) {
+            if (typeof isProfileAreaClick === 'function' && !isProfileAreaClick(e.target)) {
                 closeProfileDropdown();
             }
         });
+
+        // Mobile Sidebar Drawer Toggle
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar && backdrop) {
+                sidebar.classList.toggle('mobile-open');
+                backdrop.classList.toggle('active');
+                document.body.classList.toggle('no-scroll');
+            }
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar && backdrop) {
+                sidebar.classList.remove('mobile-open');
+                backdrop.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            }
+        }
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeLogoutModal();
                 closeProfileDropdown();
+                closeMobileSidebar();
             }
         });
     </script>

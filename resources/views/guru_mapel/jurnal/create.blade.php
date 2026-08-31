@@ -167,6 +167,14 @@
     @media (max-width: 1024px) {
         .two-cols-layout { grid-template-columns: 1fr; }
     }
+
+    @media (max-width: 576px) {
+        .form-card { padding: 16px; border-radius: 14px; }
+        .form-row { grid-template-columns: 1fr; gap: 10px; }
+        .radio-group { flex-wrap: wrap; gap: 4px; }
+        .radio-pill { padding: 4px 6px; font-size: 10px; }
+        .btn-submit { width: 100%; justify-content: center; }
+    }
 </style>
 @endsection
 

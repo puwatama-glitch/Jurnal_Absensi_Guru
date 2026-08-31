@@ -90,6 +90,12 @@
         gap: 6px;
         text-decoration: none;
     }
+    @media (max-width: 768px) {
+        .filter-card { padding: 16px; }
+        .filter-form { flex-direction: column; align-items: stretch; }
+        .filter-input { width: 100%; }
+        .section-card { padding: 16px; border-radius: 14px; }
+    }
 </style>
 @endsection
 
@@ -117,7 +123,7 @@
 
 <!-- Table Card -->
 <div class="section-card">
-    <div style="overflow-x: auto;">
+    <div class="table-responsive-wrap">
         <table class="custom-table">
             <thead>
                 <tr>

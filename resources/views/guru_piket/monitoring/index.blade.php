@@ -96,6 +96,13 @@
         color: #2b3674;
     }
     .info-item i { width: 16px; color: #2b43b9; font-size: 12px; }
+
+    @media (max-width: 768px) {
+        .filter-card { flex-direction: column; align-items: stretch; padding: 16px; }
+        .filter-group { flex-direction: column; align-items: stretch; }
+        .filter-select, .filter-input { width: 100%; }
+        .grid-container { grid-template-columns: 1fr; }
+    }
 </style>
 @endsection
 

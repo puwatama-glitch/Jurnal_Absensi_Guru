@@ -196,6 +196,16 @@
         gap: 10px;
         background: #f8fafc;
     }
+
+    @media (max-width: 768px) {
+        .summary-grid { grid-template-columns: 1fr; }
+        .filter-card { padding: 16px; }
+        .filter-form { flex-direction: column; align-items: stretch; }
+        .filter-input, .filter-select { width: 100%; }
+        .form-row { grid-template-columns: 1fr; }
+        .section-card { padding: 16px; border-radius: 14px; }
+        .custom-modal-card { width: 100%; max-width: 100%; margin: 8px; }
+    }
 </style>
 @endsection
 
@@ -250,7 +260,7 @@
 
 <!-- Table Card -->
 <div class="section-card">
-    <div style="overflow-x: auto;">
+    <div class="table-responsive-wrap">
         <table class="custom-table">
             <thead>
                 <tr>

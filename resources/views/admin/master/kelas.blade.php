@@ -229,6 +229,7 @@
         <span class="count-badge"><i class="fa-solid fa-school"></i> {{ $kelasList->total() }} Kelas Ditemukan</span>
     </div>
 
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -294,6 +295,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>{{-- end table-responsive-wrap --}}
 
     <div class="pagination-container">
         <span class="pag-text">

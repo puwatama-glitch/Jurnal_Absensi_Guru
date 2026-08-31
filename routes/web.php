@@ -47,6 +47,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/jadwal', [JadwalPelajaranController::class, 'index'])->name('admin.jadwal');
     Route::post('/jadwal', [JadwalPelajaranController::class, 'store'])->name('admin.jadwal.store');
     Route::post('/jadwal/set-tahun-ajaran', [JadwalPelajaranController::class, 'setTahunAjaran'])->name('admin.jadwal.set-ta');
+    Route::post('/jadwal/swap', [JadwalPelajaranController::class, 'swap'])->name('admin.jadwal.swap');
+    Route::post('/jadwal/{id}/move', [JadwalPelajaranController::class, 'move'])->name('admin.jadwal.move');
     Route::put('/jadwal/{id}', [JadwalPelajaranController::class, 'update'])->name('admin.jadwal.update');
     Route::delete('/jadwal/{id}', [JadwalPelajaranController::class, 'destroy'])->name('admin.jadwal.destroy');
 

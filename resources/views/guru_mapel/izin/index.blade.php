@@ -127,6 +127,11 @@
     @media (max-width: 1024px) {
         .two-cols-layout { grid-template-columns: 1fr; }
     }
+    @media (max-width: 576px) {
+        .form-card { padding: 16px; border-radius: 14px; }
+        .form-row { grid-template-columns: 1fr; gap: 10px; }
+        .btn-submit { width: 100%; justify-content: center; }
+    }
 </style>
 @endsection
 
@@ -189,7 +194,7 @@
             <h3>Riwayat Pengajuan Izin Saya</h3>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrap">
             <table class="custom-table">
                 <thead>
                     <tr>

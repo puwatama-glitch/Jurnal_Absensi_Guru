@@ -224,6 +224,7 @@
         <span class="count-badge"><i class="fa-solid fa-graduation-cap"></i> {{ $jurusanList->total() }} Jurusan Ditemukan</span>
     </div>
 
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -279,6 +280,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>{{-- end table-responsive-wrap --}}
 
     <div class="pagination-container">
         <span class="pag-text">

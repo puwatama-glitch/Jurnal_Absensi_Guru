@@ -80,6 +80,11 @@
         display: inline-flex; align-items: center; gap: 5px;
         background: #f1f5f9; color: #334155; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 8px;
     }
+
+    @media (max-width: 768px) {
+        .table-card { padding: 16px; }
+        .data-table { min-width: 720px; }
+    }
 </style>
 @endsection
 
@@ -133,6 +138,7 @@
             <span class="count-badge"><i class="fa-solid fa-calendar-check"></i> {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, j F Y') }}</span>
         </div>
 
+        <div class="table-responsive-wrap">
         <table class="data-table">
             <thead>
                 <tr>
@@ -198,6 +204,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- end table-responsive-wrap --}}
     </div>
 
 @endif

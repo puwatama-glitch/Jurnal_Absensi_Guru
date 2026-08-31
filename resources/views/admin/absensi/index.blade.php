@@ -403,6 +403,47 @@
     .chip-sakit { background: #fef3c7; color: #92400e; }
     .chip-izin  { background: #e0f2fe; color: #0369a1; }
     .chip-alpha { background: #fee2e2; color: #991b1b; }
+
+    @media (max-width: 768px) {
+        .absensi-hero {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 18px;
+        }
+        .kpi-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .filter-card {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .filter-group {
+            flex-direction: column;
+            width: 100%;
+        }
+        .filter-input, .filter-select {
+            min-width: unset;
+            width: 100%;
+        }
+        .btn-export {
+            width: 100%;
+            justify-content: center;
+        }
+        .table-card {
+            padding: 16px;
+        }
+        .modal-bx {
+            width: 94%;
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .kpi-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 @endsection
 
@@ -488,7 +529,7 @@
         </div>
         <span class="count-badge"><i class="fa-solid fa-layer-group"></i> {{ $jurnalList->count() }} Sesi Mengajar</span>
     </div>
-
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -520,42 +561,45 @@
                         <div class="teacher-name">{{ $j->guru->nama_lengkap ?? '-' }}</div>
                     </div>
                 </td>
-                <td><span class="mapel-pill">{{ $j->mapel->nama_mapel ?? '-' }}</span></td>
-                <td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#334155;font-weight:600;" title="{{ $j->materi }}">
-                    {{ $j->materi }}
+                <td style="font-weight:700;color:#0f172a;">{{ $j->mapel->nama_mapel ?? '-' }}</td>
+                <td style="max-width:240px;color:#64748b;font-weight:500;">
+                    {{ Str::limit($j->materi ?? 'Tidak ada materi tertulis', 55) }}
                 </td>
                 <td>
-                    <div class="progress-bar-container">
-                        <div style="font-weight:800;font-size:12px;color:#0f172a;">
-                            {{ $j->jumlah_siswa_hadir }}/{{ $tot }} Siswa <span style="color:#64748b;font-weight:600;">({{ $pct }}%)</span>
-                        </div>
-                        <div class="progress-bar-track">
+                    <div class="attendance-progress-wrap">
+                        <div class="progress-bar-bg">
                             <div class="progress-bar-fill {{ $fillClass }}" style="width: {{ $pct }}%;"></div>
                         </div>
+                        <span class="progress-pct-lbl">{{ $pct }}%</span>
                     </div>
                 </td>
                 <td>
-                    <span class="status-terisi-badge">
-                        <span class="status-dot"></span> Terisi
-                    </span>
+                    @if($j->status === 'terisi')
+                        <span class="status-pill status-terisi"><i class="fa-solid fa-check"></i> Terisi</span>
+                    @else
+                        <span class="status-pill status-pending"><i class="fa-solid fa-clock"></i> Belum Selesai</span>
+                    @endif
                 </td>
-                <td style="text-align:center;">
-                    <button class="btn-action-detail" onclick="viewDetail({{ $j->id_jurnal }})">
-                        <i class="fa-solid fa-eye"></i> Detail Presensi
-                    </button>
+                <td>
+                    <div style="display:flex;justify-content:center;">
+                        <button class="btn-detail-view" onclick="viewDetail({{ $j->id_jurnal }})">
+                            <i class="fa-solid fa-eye"></i> Detail
+                        </button>
+                    </div>
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="8" style="text-align:center;padding:54px 20px;color:#94a3b8;">
-                    <i class="fa-solid fa-clipboard-question" style="font-size:46px;margin-bottom:14px;color:#cbd5e1;"></i>
-                    <p style="font-size:16px;font-weight:800;color:#0f172a;">Tidak ada sesi jurnal mengajar pada tanggal ini</p>
-                    <p style="font-size:13px;margin-top:4px;color:#64748b;">Silakan pilih tanggal lain di filter atas atau pastikan guru telah mengisi jurnal.</p>
+                <td colspan="8" style="text-align:center;padding:50px 20px;color:#94a3b8;">
+                    <i class="fa-solid fa-clipboard-question" style="font-size:42px;margin-bottom:12px;color:#cbd5e1;"></i>
+                    <p style="font-size:15px;font-weight:800;color:#0f172a;">Tidak ada sesi mengajar hari ini</p>
+                    <p style="font-size:13px;margin-top:4px;color:#64748b;">Gunakan filter tanggal atau kelas di atas untuk melihat riwayat terdahulu.</p>
                 </td>
             </tr>
             @endforelse
         </tbody>
     </table>
+    </div>{{-- end table-responsive-wrap --}}
 </div>
 
 {{-- Modern Detail Modal --}}
@@ -596,6 +640,7 @@
                 <span style="font-size:12px;font-weight:700;color:#64748b;" id="m_stat_hadir"></span>
             </div>
 
+            <div class="table-responsive-wrap">
             <table class="data-table">
                 <thead>
                     <tr>
@@ -608,6 +653,7 @@
                 <tbody id="m_presensi_body">
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>

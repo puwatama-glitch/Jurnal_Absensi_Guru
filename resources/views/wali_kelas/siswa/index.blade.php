@@ -140,6 +140,12 @@
     .pag-pills a:hover { background: #eaeff8; color: #2b43b9; }
     .pag-pills span.active { background: #2b43b9; color: #ffffff; box-shadow: 0 4px 12px rgba(43,67,185,0.25); }
     .pag-pills span.disabled { background: #f8fafc; color: #cbd5e1; cursor: default; }
+
+    @media (max-width: 768px) {
+        .filter-input { min-width: unset; width: 100%; }
+        .table-card { padding: 16px; }
+        .data-table { min-width: 640px; }
+    }
 </style>
 @endsection
 
@@ -196,6 +202,7 @@
             <span class="count-badge"><i class="fa-solid fa-users"></i> {{ $siswaList->total() }} Siswa</span>
         </div>
 
+        <div class="table-responsive-wrap">
         <table class="data-table">
             <thead>
                 <tr>
@@ -258,6 +265,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- end table-responsive-wrap --}}
 
         {{-- Custom Pagination Pills --}}
         @if($siswaList->hasPages())

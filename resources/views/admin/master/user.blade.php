@@ -502,7 +502,7 @@
             </div>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrap">
             <table class="data-table">
                 <thead>
                     <tr>

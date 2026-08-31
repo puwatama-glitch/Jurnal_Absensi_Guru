@@ -249,6 +249,24 @@
     .delete-icon-wrap { font-size: 46px; color: #ef4444; margin-bottom: 14px; }
     .delete-target-name { font-weight: 800; color: #0f172a; font-size: 18px; margin-bottom: 8px; }
     .btn-modal-delete-confirm { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; border: none; border-radius: 12px; padding: 11px 24px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+        .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+        .kpi-icon { width: 42px; height: 42px; font-size: 18px; }
+        .kpi-val { font-size: 24px; }
+        .kpi-lbl { font-size: 11px; }
+        .kpi-sub { font-size: 10px; }
+        .table-card { padding: 16px; }
+        .form-btn-actions { flex-direction: column; }
+        .form-btn-actions .btn-modal-cancel,
+        .form-btn-actions .btn-modal-submit { width: 100%; text-align: center; }
+    }
+    @media (max-width: 480px) {
+        .kpi-grid { grid-template-columns: 1fr; }
+        .kpi-card { flex-direction: row; gap: 14px; }
+        .count-badge { font-size: 11px; padding: 4px 10px; }
+    }
 </style>
 @endsection
 
@@ -353,6 +371,7 @@
         <span class="count-badge"><i class="fa-solid fa-user-group"></i> {{ $siswaList->total() }} Siswa Ditemukan</span>
     </div>
 
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -418,6 +437,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>{{-- end table-responsive-wrap --}}
 
     {{-- Pagination --}}
     <div class="pagination-container">

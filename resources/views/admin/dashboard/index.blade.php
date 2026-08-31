@@ -377,6 +377,85 @@
         color: #475569;
         text-transform: uppercase;
     }
+
+    /* Responsive Media Queries */
+    @media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .greeting-title { font-size: 18px; }
+        .greeting-subtitle { font-size: 12.5px; }
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            padding: 14px 16px;
+            border-radius: 14px;
+        }
+        .stat-value {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+        .stat-label {
+            font-size: 10.5px;
+        }
+        .stat-footer {
+            font-size: 10.5px;
+        }
+        .charts-grid, .widgets-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .chart-card, .widget-card {
+            padding: 16px;
+            border-radius: 14px;
+        }
+        .chart-card-header {
+            margin-bottom: 14px;
+        }
+        .line-chart-container, .donut-chart-container {
+            height: 190px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .stat-card {
+            padding: 12px;
+        }
+        .stat-card:last-child {
+            grid-column: span 2;
+        }
+        .stat-value {
+            font-size: 20px;
+        }
+        .stat-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+        .attention-item, .activity-item {
+            padding: 8px;
+            gap: 10px;
+        }
+    }
 </style>
 @endsection
 

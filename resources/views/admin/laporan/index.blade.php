@@ -338,6 +338,7 @@
         </div>
         <span class="count-badge">{{ $absensiSiswaData->count() }} Siswa Direkap</span>
     </div>
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -373,6 +374,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 @elseif($activeTab === 'jurnal_mengajar')
@@ -421,6 +423,7 @@
         </div>
         <span class="count-badge">{{ $jurnalData->count() }} Sesi Tercatat</span>
     </div>
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -451,6 +454,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 @elseif($activeTab === 'dispensasi_siswa')
@@ -499,6 +503,7 @@
         </div>
         <span class="count-badge">{{ $dispensasiData->count() }} Data Dispen</span>
     </div>
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -536,6 +541,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 @elseif($activeTab === 'izin_guru')
@@ -584,6 +590,7 @@
         </div>
         <span class="count-badge">{{ $izinGuruData->count() }} Data Izin</span>
     </div>
+    <div class="table-responsive-wrap">
     <table class="data-table">
         <thead>
             <tr>
@@ -615,6 +622,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 @elseif($activeTab === 'ringkasan_semester')
