@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasOne(Guru::class, 'user_id');
     }
 
+    public function siswa()
+    {
+        return $this->hasOne(Siswa::class, 'user_id');
+    }
+
     public function notifikasi()
     {
         return $this->hasMany(Notifikasi::class, 'user_id');
@@ -91,6 +96,21 @@ class User extends Authenticatable
     public function hasAnyRole(array $roles): bool
     {
         return in_array($this->role, $roles);
+    }
+
+    public function isWakaKurikulum(): bool
+    {
+        return $this->role === 'waka_kurikulum' || ($this->role === 'waka' && $this->waka?->bidang === 'Kurikulum');
+    }
+
+    public function isWakaSdm(): bool
+    {
+        return $this->role === 'waka_sdm' || ($this->role === 'waka' && $this->waka?->bidang === 'SDM');
+    }
+
+    public function isWaliMurid(): bool
+    {
+        return $this->role === 'wali_murid';
     }
 
     public function scopeActive($query)

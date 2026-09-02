@@ -284,34 +284,52 @@
     .custom-modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.6);
+        background: rgba(15, 23, 42, 0.65);
         backdrop-filter: blur(4px);
         display: none;
         align-items: center;
         justify-content: center;
         z-index: 9999;
-        padding: 16px;
+        padding: 20px 16px;
+        overflow-y: auto;
     }
     .custom-modal-backdrop.show { display: flex; }
     .custom-modal-card {
         background: #ffffff;
         border-radius: 20px;
         width: 100%;
-        max-width: 540px;
+        max-width: 560px;
+        max-height: calc(100vh - 40px);
+        display: flex;
+        flex-direction: column;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        margin: auto;
+    }
+    .custom-modal-card form {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
         overflow: hidden;
     }
     .modal-head {
-        padding: 18px 24px;
+        padding: 16px 24px;
         border-bottom: 1px solid #f1f5f9;
         display: flex;
         align-items: center;
         justify-content: space-between;
         background: #f8fafc;
+        flex-shrink: 0;
     }
     .modal-head h3 { font-size: 16px; font-weight: 800; color: #1b2559; display: flex; align-items: center; gap: 8px; }
-    .modal-close-btn { background: none; border: none; font-size: 18px; color: #94a3b8; cursor: pointer; }
-    .modal-body { padding: 22px 24px; }
+    .modal-close-btn { background: none; border: none; font-size: 22px; color: #94a3b8; cursor: pointer; padding: 2px 6px; line-height: 1; border-radius: 6px; transition: all 0.15s ease; }
+    .modal-close-btn:hover { color: #1e293b; background: #e2e8f0; }
+    .modal-body {
+        padding: 20px 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 12.5px; font-weight: 700; color: #2b3674; margin-bottom: 6px; }
     .form-control {
@@ -328,12 +346,24 @@
     .form-control:focus { border-color: #2b43b9; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .modal-footer {
-        padding: 16px 24px;
+        padding: 14px 24px;
         border-top: 1px solid #f1f5f9;
         display: flex;
         justify-content: flex-end;
         gap: 10px;
         background: #f8fafc;
+        flex-shrink: 0;
+    }
+
+    .dispensasi-siswa-item:hover {
+        background-color: #f1f5f9 !important;
+    }
+    .dispensasi-siswa-item:hover .siswa-name {
+        color: #2b43b9 !important;
+    }
+    .dispensasi-siswa-item:hover i.fa-chevron-right {
+        color: #2b43b9 !important;
+        transform: translateX(3px);
     }
 
     @media (max-width: 1200px) {
@@ -709,17 +739,105 @@
             <h3><i class="fa-solid fa-ticket-simple" style="color: #2b43b9;"></i> Terbitkan Surat Dispensasi Siswa</h3>
             <button type="button" class="modal-close-btn" onclick="closeDispensasiModal()">&times;</button>
         </div>
-        <form action="{{ route('guru-piket.dispensasi.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('guru-piket.dispensasi.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateDispensasiForm(this);">
             @csrf
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Pilih Siswa <span style="color:#ef4444;">*</span></label>
-                    <select name="id_siswa" class="form-control" required>
-                        <option value="">-- Cari & Pilih Siswa --</option>
-                        @foreach($siswaSelectOption as $s)
-                            <option value="{{ $s->id_siswa }}">{{ $s->nama_lengkap }} ({{ $s->kelas->nama_kelas ?? '-' }}) - NISN: {{ $s->nisn }}</option>
-                        @endforeach
-                    </select>
+                    <label style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Pilih Siswa <span style="color:#ef4444;">*</span></span>
+                        <span id="dispensasiSiswaCount" style="font-size: 11px; font-weight: 600; color: #64748b;">
+                            Menampilkan {{ count($siswaSelectOption) }} siswa
+                        </span>
+                    </label>
+
+                    <!-- Hidden Input for Form Submission -->
+                    <input type="hidden" name="id_siswa" id="dispensasiIdSiswa" required>
+
+                    <!-- Selected Student Preview Card -->
+                    <div id="dispensasiSelectedCard" style="display: none; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #dcfce7; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <div>
+                                <div id="dispensasiSelectedName" style="font-weight: 800; color: #166534; font-size: 13px;"></div>
+                                <div id="dispensasiSelectedMeta" style="font-size: 11.5px; color: #15803d; margin-top: 1px;"></div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="changeSiswaDispensasi()" style="background: #ffffff; border: 1px solid #bbf7d0; border-radius: 8px; padding: 5px 10px; font-size: 11.5px; font-weight: 700; color: #dc2626; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-rotate-left"></i> Ganti
+                        </button>
+                    </div>
+
+                    <!-- Search & Results Section -->
+                    <div id="dispensasiSearchSection">
+
+                        <!-- Filter Baris: Tingkat & Kelas -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                            <div style="position: relative;">
+                                <select id="dispensasiFilterTingkat" class="form-control" onchange="filterSiswaDispensasi()" style="font-size: 12.5px; padding: 8px 30px 8px 12px; border-color: #cbd5e1; appearance: none; -webkit-appearance: none; cursor: pointer; background: #ffffff;">
+                                    <option value="">Semua Tingkat</option>
+                                    <option value="X">Tingkat X</option>
+                                    <option value="XI">Tingkat XI</option>
+                                    <option value="XII">Tingkat XII</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 11px;"></i>
+                            </div>
+                            <div style="position: relative;">
+                                <select id="dispensasiFilterKelas" class="form-control" onchange="filterSiswaDispensasi()" style="font-size: 12.5px; padding: 8px 30px 8px 12px; border-color: #cbd5e1; appearance: none; -webkit-appearance: none; cursor: pointer; background: #ffffff;">
+                                    <option value="">Semua Kelas</option>
+                                    @foreach($kelasList as $k)
+                                        <option value="{{ $k->id_kelas }}" data-tingkat="{{ $k->tingkat }}">{{ $k->nama_kelas }}{{ $k->jurusan ? ' ('.$k->jurusan.')' : '' }}</option>
+                                    @endforeach
+                                </select>
+                                <i class="fa-solid fa-chevron-down" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 11px;"></i>
+                            </div>
+                        </div>
+
+                        <!-- Search Text -->
+                        <div style="position: relative; margin-bottom: 8px;">
+                            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 13px; pointer-events: none;"></i>
+                            <input type="text" id="dispensasiSearchInput" class="form-control" placeholder="Cari nama atau NISN..." style="padding-left: 38px; padding-right: 36px; border-color: #cbd5e1;" oninput="filterSiswaDispensasi()">
+                            <button type="button" id="dispensasiClearSearchBtn" onclick="resetAllDispensasiFilters()" title="Reset semua filter" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; display: none; padding: 4px;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <!-- Scrollable Student List -->
+                        <div id="dispensasiSiswaListWrapper" style="max-height: 160px; overflow-y: auto; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #ffffff; padding: 4px;">
+                            <div id="dispensasiSiswaEmpty" style="display: none; padding: 18px; text-align: center; color: #94a3b8; font-size: 12.5px;">
+                                <i class="fa-solid fa-user-slash" style="font-size: 20px; margin-bottom: 6px; display: block; color: #cbd5e1;"></i>
+                                Tidak ada siswa yang cocok dengan filter.
+                            </div>
+                            <div id="dispensasiSiswaOptions">
+                                @foreach($siswaSelectOption as $s)
+                                    <div class="dispensasi-siswa-item" 
+                                         data-id="{{ $s->id_siswa }}" 
+                                         data-name="{{ $s->nama_lengkap }}" 
+                                         data-kelas="{{ $s->kelas->nama_kelas ?? '-' }}" 
+                                         data-id-kelas="{{ $s->id_kelas }}"
+                                         data-tingkat="{{ $s->kelas->tingkat ?? '' }}"
+                                         data-nisn="{{ $s->nisn }}"
+                                         data-jurusan="{{ strtolower($s->kelas->jurusan ?? '') }}"
+                                         data-search="{{ strtolower($s->nama_lengkap . ' ' . ($s->kelas->nama_kelas ?? '') . ' ' . $s->nisn) }}"
+                                         onclick="selectSiswaDispensasi(this)"
+                                         style="padding: 9px 12px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.15s ease; border-bottom: 1px solid #f8fafc;">
+                                        <div>
+                                            <div class="siswa-name" style="font-weight: 700; font-size: 13px; color: #1b2559;">{{ $s->nama_lengkap }}</div>
+                                            <div style="font-size: 11.5px; color: #64748b; margin-top: 2px;">
+                                                <span style="background: #eef2ff; color: #2b43b9; padding: 1px 7px; border-radius: 4px; font-weight: 700; font-size: 10.5px;">{{ $s->kelas->nama_kelas ?? '-' }}</span>
+                                                @if($s->kelas->jurusan ?? null)
+                                                    <span style="background: #fff7ed; color: #c2410c; padding: 1px 7px; border-radius: 4px; font-weight: 700; font-size: 10px; margin-left: 4px;">{{ $s->kelas->jurusan }}</span>
+                                                @endif
+                                                <span style="margin-left: 6px;">NISN: {{ $s->nisn }}</span>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #cbd5e1; transition: all 0.15s ease;"></i>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -800,6 +918,12 @@
 <script>
     function openDispensasiModal() {
         document.getElementById('dispensasiModal').classList.add('show');
+        setTimeout(() => {
+            const searchInput = document.getElementById('dispensasiSearchInput');
+            if (searchInput && document.getElementById('dispensasiSearchSection').style.display !== 'none') {
+                searchInput.focus();
+            }
+        }, 150);
     }
     function closeDispensasiModal() {
         document.getElementById('dispensasiModal').classList.remove('show');
@@ -809,6 +933,112 @@
     }
     function closeLaporanModal() {
         document.getElementById('laporanModal').classList.remove('show');
+    }
+
+    function filterSiswaDispensasi() {
+        const term = (document.getElementById('dispensasiSearchInput')?.value || '').toLowerCase().trim();
+        const filterTingkat = document.getElementById('dispensasiFilterTingkat')?.value || '';
+        const filterKelas = document.getElementById('dispensasiFilterKelas')?.value || '';
+
+        const items = document.querySelectorAll('.dispensasi-siswa-item');
+        const emptyMsg = document.getElementById('dispensasiSiswaEmpty');
+        const counter = document.getElementById('dispensasiSiswaCount');
+        const clearBtn = document.getElementById('dispensasiClearSearchBtn');
+
+        const hasAnyFilter = term || filterTingkat || filterKelas;
+        if (clearBtn) clearBtn.style.display = hasAnyFilter ? 'block' : 'none';
+
+        // Cascade-filter kelas dropdown saat tingkat dipilih
+        const kelasSelect = document.getElementById('dispensasiFilterKelas');
+        if (kelasSelect && filterTingkat) {
+            Array.from(kelasSelect.options).forEach(opt => {
+                if (!opt.value) return;
+                opt.style.display = (opt.getAttribute('data-tingkat') === filterTingkat) ? '' : 'none';
+            });
+            if (kelasSelect.value) {
+                const selOpt = kelasSelect.options[kelasSelect.selectedIndex];
+                if (selOpt && selOpt.getAttribute('data-tingkat') !== filterTingkat) {
+                    kelasSelect.value = '';
+                }
+            }
+        } else if (kelasSelect && !filterTingkat) {
+            Array.from(kelasSelect.options).forEach(opt => opt.style.display = '');
+        }
+
+        const activeKelas = document.getElementById('dispensasiFilterKelas')?.value || '';
+
+        let matchCount = 0;
+        items.forEach(item => {
+            const searchText  = item.getAttribute('data-search') || '';
+            const itemTingkat = item.getAttribute('data-tingkat') || '';
+            const itemIdKelas = item.getAttribute('data-id-kelas') || '';
+
+            const matchText    = !term          || searchText.includes(term);
+            const matchTingkat = !filterTingkat || itemTingkat === filterTingkat;
+            const matchKelas   = !activeKelas   || itemIdKelas === activeKelas;
+
+            if (matchText && matchTingkat && matchKelas) {
+                item.style.display = 'flex';
+                matchCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        if (emptyMsg) emptyMsg.style.display = matchCount === 0 ? 'block' : 'none';
+        if (counter) {
+            counter.innerText = hasAnyFilter
+                ? `Ditemukan ${matchCount} siswa`
+                : `Menampilkan ${matchCount} siswa`;
+        }
+    }
+
+    function selectSiswaDispensasi(el) {
+        const id      = el.getAttribute('data-id');
+        const name    = el.getAttribute('data-name');
+        const kelas   = el.getAttribute('data-kelas');
+        const nisn    = el.getAttribute('data-nisn');
+        const jurusan = el.getAttribute('data-jurusan') || '';
+
+        document.getElementById('dispensasiIdSiswa').value = id;
+        document.getElementById('dispensasiSelectedName').innerText = name;
+        document.getElementById('dispensasiSelectedMeta').innerText =
+            `${kelas}${jurusan ? ' • ' + jurusan.toUpperCase() : ''} • NISN: ${nisn}`;
+
+        document.getElementById('dispensasiSelectedCard').style.display = 'flex';
+        document.getElementById('dispensasiSearchSection').style.display = 'none';
+    }
+
+    function changeSiswaDispensasi() {
+        document.getElementById('dispensasiIdSiswa').value = '';
+        document.getElementById('dispensasiSelectedCard').style.display = 'none';
+        document.getElementById('dispensasiSearchSection').style.display = 'block';
+        resetAllDispensasiFilters();
+    }
+
+    function resetAllDispensasiFilters() {
+        const searchInput   = document.getElementById('dispensasiSearchInput');
+        const filterTingkat = document.getElementById('dispensasiFilterTingkat');
+        const filterKelas   = document.getElementById('dispensasiFilterKelas');
+        if (searchInput)   searchInput.value = '';
+        if (filterTingkat) filterTingkat.value = '';
+        if (filterKelas) {
+            filterKelas.value = '';
+            Array.from(filterKelas.options).forEach(o => o.style.display = '');
+        }
+        filterSiswaDispensasi();
+        if (searchInput) searchInput.focus();
+    }
+
+    function validateDispensasiForm(form) {
+        const idSiswa = document.getElementById('dispensasiIdSiswa').value;
+        if (!idSiswa) {
+            alert('Silakan cari dan pilih siswa terlebih dahulu dari daftar pencarian!');
+            const searchInput = document.getElementById('dispensasiSearchInput');
+            if (searchInput) searchInput.focus();
+            return false;
+        }
+        return true;
     }
 
     document.addEventListener('DOMContentLoaded', function() {

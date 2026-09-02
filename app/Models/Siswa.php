@@ -14,6 +14,7 @@ class Siswa extends Model
     protected $primaryKey = 'id_siswa';
 
     protected $fillable = [
+        'user_id',
         'nis',
         'nisn',
         'nama_lengkap',
@@ -27,6 +28,11 @@ class Siswa extends Model
     protected $casts = [
         'status_aktif' => 'boolean',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     public function kelas()
     {

@@ -121,21 +121,47 @@ class DatabaseSeeder extends Seeder
             'periode_jabatan' => '2022-2026',
         ]);
 
-        // Waka
-        $userWaka = User::create([
+        // Waka Kurikulum
+        $userWakaKurikulum = User::create([
             'name' => 'Budi Santoso, M.T (Waka Kurikulum)',
-            'email' => 'waka@smkn1boyolangu.sch.id',
+            'email' => 'wakakurikulum@smkn1boyolangu.sch.id',
             'password' => Hash::make('password'),
-            'role' => 'waka',
+            'role' => 'waka_kurikulum',
             'is_active' => true,
         ]);
         Waka::create([
-            'user_id' => $userWaka->id,
+            'user_id' => $userWakaKurikulum->id,
             'nip' => '197911042006041006',
             'nama_lengkap' => 'Budi Santoso, M.T',
             'jenis_kelamin' => 'L',
             'no_hp' => '081234567895',
             'bidang' => 'Kurikulum',
+        ]);
+
+        // Waka SDM
+        $userWakaSdm = User::create([
+            'name' => 'Dr. Hendra Wijaya, M.Pd (Waka SDM)',
+            'email' => 'wakasdm@smkn1boyolangu.sch.id',
+            'password' => Hash::make('password'),
+            'role' => 'waka_sdm',
+            'is_active' => true,
+        ]);
+        Waka::create([
+            'user_id' => $userWakaSdm->id,
+            'nip' => '198103152008011009',
+            'nama_lengkap' => 'Dr. Hendra Wijaya, M.Pd',
+            'jenis_kelamin' => 'L',
+            'no_hp' => '081234567897',
+            'bidang' => 'SDM',
+        ]);
+
+        // Wali Murid / Siswa Sample
+        $userWaliMurid = User::create([
+            'name' => 'Bapak/Ibu Wali Murid',
+            'email' => 'walimurid@smkn1boyolangu.sch.id',
+            'password' => Hash::make('password'),
+            'role' => 'wali_murid',
+            'is_active' => true,
         ]);
 
         // Satpam

@@ -19,6 +19,9 @@ use App\Http\Controllers\WaliKelasDashboardController;
 use App\Http\Controllers\GuruPiketDashboardController;
 use App\Http\Controllers\GuruMapelDashboardController;
 use App\Http\Controllers\SatpamDashboardController;
+use App\Http\Controllers\WakaKurikulumDashboardController;
+use App\Http\Controllers\WakaSdmDashboardController;
+use App\Http\Controllers\WaliMuridDashboardController;
 
 Route::get('/', function () {
     return redirect()->route('admin.dashboard');
@@ -181,6 +184,30 @@ Route::prefix('satpam')->name('satpam.')->middleware('auth')->group(function () 
     
     // Panduan Satpam Gate
     Route::get('/help', [SatpamDashboardController::class, 'help'])->name('help');
+});
+
+// Waka Kurikulum Routes (auth protected)
+Route::prefix('waka-kurikulum')->name('waka-kurikulum.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [WakaKurikulumDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/jurnal', [WakaKurikulumDashboardController::class, 'jurnal'])->name('jurnal');
+    Route::get('/jadwal', [WakaKurikulumDashboardController::class, 'jadwal'])->name('jadwal');
+});
+
+// Waka SDM / Kepegawaian Routes (auth protected)
+Route::prefix('waka-sdm')->name('waka-sdm.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [WakaSdmDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/guru', [WakaSdmDashboardController::class, 'guru'])->name('guru');
+    Route::get('/izin', [WakaSdmDashboardController::class, 'izin'])->name('izin');
+    Route::post('/izin/{id}/status', [WakaSdmDashboardController::class, 'updateStatusIzin'])->name('izin.status');
+});
+
+// Wali Murid / Siswa Portal Routes (auth protected)
+Route::prefix('wali-murid')->name('wali-murid.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [WaliMuridDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/presensi', [WaliMuridDashboardController::class, 'presensi'])->name('presensi');
+    Route::get('/jurnal', [WaliMuridDashboardController::class, 'jurnal'])->name('jurnal');
+    Route::get('/jadwal', [WaliMuridDashboardController::class, 'jadwal'])->name('jadwal');
+    Route::get('/dispensasi', [WaliMuridDashboardController::class, 'dispensasi'])->name('dispensasi');
 });
 
 Route::resource('jurnal', JurnalMengajarController::class);

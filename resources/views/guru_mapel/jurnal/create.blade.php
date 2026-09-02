@@ -214,7 +214,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Pilih Kelas <span style="color:#ef4444;">*</span></label>
-                    <select name="id_kelas" class="form-control" required onchange="window.location.href='{{ route('guru-mapel.jurnal.create') }}?id_kelas='+this.value+'&id_mapel={{ $idMapel }}&tanggal={{ $tanggal }}'">
+                    <select name="id_kelas" class="form-control" required onchange="window.location.href='{{ route('guru-mapel.jurnal.create') }}?id_kelas='+this.value+'&id_mapel={{ $idMapel }}'">
                         @foreach($kelasList as $k)
                             <option value="{{ $k->id_kelas }}" {{ $idKelas == $k->id_kelas ? 'selected' : '' }}>{{ $k->nama_kelas }} ({{ $k->jurusan ?? 'Umum' }})</option>
                         @endforeach
@@ -233,8 +233,21 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>Tanggal Mengajar <span style="color:#ef4444;">*</span></label>
-                    <input type="date" name="tanggal" value="{{ $tanggal }}" class="form-control" required>
+                    <label style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Tanggal Mengajar <span style="color:#ef4444;">*</span></span>
+                        <span style="font-size: 11px; font-weight: 700; color: #475569; background: #f1f5f9; padding: 2px 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <i class="fa-solid fa-lock" style="font-size: 10px; color: #64748b;"></i> Terkunci Otomatis
+                        </span>
+                    </label>
+                    <div style="position: relative;">
+                        <input type="date" name="tanggal" value="{{ $today }}" class="form-control" readonly required tabindex="-1" style="background-color: #f8fafc; cursor: not-allowed; color: #334155; font-weight: 700; border-color: #cbd5e1; pointer-events: none;">
+                        <div style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 13px;">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                    </div>
+                    <small style="font-size: 11px; color: #64748b; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid fa-shield-halved" style="color: #2b43b9;"></i> Tanggal otomatis hari ini demi integritas validitas KBM.
+                    </small>
                 </div>
 
                 <div class="form-group">

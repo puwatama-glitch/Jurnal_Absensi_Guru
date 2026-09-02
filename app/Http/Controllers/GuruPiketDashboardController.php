@@ -274,6 +274,8 @@ class GuruPiketDashboardController extends Controller
             ->orderBy('nama_lengkap')
             ->get(['id_siswa', 'nama_lengkap', 'nisn', 'id_kelas']);
 
+        $kelasList = Kelas::orderBy('tingkat')->orderBy('nama_kelas')->get(['id_kelas', 'nama_kelas', 'tingkat', 'jurusan']);
+
         return view('guru_piket.dashboard.index', compact(
             'user', 'guruPiket', 'allGuruPiketList', 'tahunAjaranAktif',
             'today', 'todayFormatted', 'hariIni',
@@ -285,7 +287,7 @@ class GuruPiketDashboardController extends Controller
             'totalTidakMasuk', 'totalPresensi', 'pctHadirSekolah',
             'kelasMonitoring', 'recentJurnal', 'laporanPiketToday',
             'jurusanLabels', 'jurusanAbsen', 'piePresensi', 'trendLabels', 'trendHadir', 'trendAbsen',
-            'siswaSelectOption'
+            'siswaSelectOption', 'kelasList'
         ));
     }
 
@@ -434,8 +436,10 @@ class GuruPiketDashboardController extends Controller
             ->orderBy('nama_lengkap')
             ->get(['id_siswa', 'nama_lengkap', 'nisn', 'id_kelas']);
 
+        $kelasList = Kelas::orderBy('tingkat')->orderBy('nama_kelas')->get(['id_kelas', 'nama_kelas', 'tingkat', 'jurusan']);
+
         return view('guru_piket.dispensasi.index', compact(
-            'user', 'guruPiket', 'dispensasiList', 'tanggal', 'search', 'status', 'siswaSelectOption'
+            'user', 'guruPiket', 'dispensasiList', 'tanggal', 'search', 'status', 'siswaSelectOption', 'kelasList'
         ));
     }
 

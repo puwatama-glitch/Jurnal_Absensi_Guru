@@ -12,6 +12,7 @@ use App\Models\GuruMapel;
 use App\Models\Satpam;
 use App\Models\KepalaSekolah;
 use App\Models\Waka;
+use App\Models\Siswa;
 
 class AuthController extends Controller
 {
@@ -39,7 +40,7 @@ class AuthController extends Controller
         // 1. Search user by email
         $user = User::where('email', $loginInput)->first();
 
-        // 2. If not found by email, search across all separate role tables by NIP
+        // 2. If not found by email, search across all separate role tables by NIP / NISN
         if (!$user) {
             $user = $this->findUserByNipInRoleTables($loginInput);
         }
@@ -63,7 +64,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Search for user by NIP across separate role tables.
+     * Search for user by NIP / NISN across separate role tables.
      */
     protected function findUserByNipInRoleTables(string $nip): ?User
     {
@@ -95,6 +96,10 @@ class AuthController extends Controller
         $waka = Waka::where('nip', $nip)->first();
         if ($waka && $waka->user_id) return User::find($waka->user_id);
 
+        // Check siswa / wali_murid by NISN or NIS
+        $siswa = Siswa::where('nisn', $nip)->orWhere('nis', $nip)->first();
+        if ($siswa && $siswa->user_id) return User::find($siswa->user_id);
+
         return null;
     }
 
@@ -119,8 +124,18 @@ class AuthController extends Controller
                 return redirect()->route('guru-mapel.dashboard');
             case 'satpam':
                 return redirect()->route('satpam.dashboard');
-            case 'kepala_sekolah':
+            case 'waka_kurikulum':
+                return redirect()->route('waka-kurikulum.dashboard');
+            case 'waka_sdm':
+                return redirect()->route('waka-sdm.dashboard');
+            case 'wali_murid':
+                return redirect()->route('wali-murid.dashboard');
             case 'waka':
+                if ($user->waka?->bidang === 'SDM') {
+                    return redirect()->route('waka-sdm.dashboard');
+                }
+                return redirect()->route('waka-kurikulum.dashboard');
+            case 'kepala_sekolah':
             default:
                 return redirect()->route('jurnal.index');
         }

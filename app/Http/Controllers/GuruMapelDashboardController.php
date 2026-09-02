@@ -191,7 +191,7 @@ class GuruMapelDashboardController extends Controller
         $idJadwal = $request->input('id_jadwal');
         $idKelas = $request->input('id_kelas');
         $idMapel = $request->input('id_mapel');
-        $tanggal = $request->input('tanggal', $today);
+        $tanggal = $today; // Tanggal mengajar terkunci otomatis ke hari ini
 
         $selectedJadwal = null;
         if ($idJadwal) {
@@ -264,7 +264,7 @@ class GuruMapelDashboardController extends Controller
         $validated = $request->validate([
             'id_kelas'     => 'required|exists:kelas,id_kelas',
             'id_mapel'     => 'required|exists:mapel,id_mapel',
-            'tanggal'      => 'required|date',
+            'tanggal'      => 'nullable|date',
             'jam_ke'       => 'required|string|max:10',
             'jam_mulai'    => 'nullable',
             'jam_selesai'  => 'nullable',
@@ -276,6 +276,7 @@ class GuruMapelDashboardController extends Controller
             'keterangan'   => 'nullable|array',
         ]);
 
+        $today = Carbon::today()->format('Y-m-d');
         $presensiData = $request->input('presensi', []);
         $keteranganData = $request->input('keterangan', []);
 
@@ -297,7 +298,7 @@ class GuruMapelDashboardController extends Controller
                 'id_guru'                 => $guru->id_guru,
                 'id_kelas'                => $validated['id_kelas'],
                 'id_mapel'                => $validated['id_mapel'],
-                'tanggal'                 => $validated['tanggal'],
+                'tanggal'                 => $today, // Wajib sesuai tanggal hari ini (server) untuk mencegah manipulasi
                 'jam_ke'                  => $validated['jam_ke'],
                 'jam_mulai'               => $validated['jam_mulai'],
                 'jam_selesai'             => $validated['jam_selesai'],

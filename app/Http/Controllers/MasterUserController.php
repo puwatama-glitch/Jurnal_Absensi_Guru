@@ -12,6 +12,7 @@ use App\Models\GuruMapel;
 use App\Models\KepalaSekolah;
 use App\Models\Waka;
 use App\Models\Satpam;
+use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,7 @@ class MasterUserController extends Controller
         $status = $request->input('status');
 
         $query = User::query()
-            ->with(['guru', 'admin', 'waliKelas', 'guruPiket', 'guruMapel', 'kepalaSekolah', 'waka', 'satpam'])
+            ->with(['guru', 'admin', 'waliKelas', 'guruPiket', 'guruMapel', 'kepalaSekolah', 'waka', 'satpam', 'siswa.kelas'])
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($q2) use ($search) {
                     $q2->where('name', 'LIKE', "%{$search}%")
@@ -42,11 +43,12 @@ class MasterUserController extends Controller
         $userList = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         // Global Statistics
-        $totalUser   = User::count();
-        $totalActive = User::where('is_active', true)->count();
-        $totalAdmin  = User::where('role', 'admin')->count();
-        $totalGuru   = User::whereIn('role', ['wali_kelas', 'guru_mapel', 'guru_piket'])->count();
-        $totalStaff  = User::whereIn('role', ['kepala_sekolah', 'waka', 'satpam'])->count();
+        $totalUser      = User::count();
+        $totalActive    = User::where('is_active', true)->count();
+        $totalAdmin     = User::where('role', 'admin')->count();
+        $totalGuru      = User::whereIn('role', ['wali_kelas', 'guru_mapel', 'guru_piket'])->count();
+        $totalStaff     = User::whereIn('role', ['kepala_sekolah', 'waka', 'waka_sdm', 'waka_kurikulum', 'satpam'])->count();
+        $totalWaliMurid = User::where('role', 'wali_murid')->count();
 
         // Role Breakdown Counts for Quick Tabs
         $roleCounts = [
@@ -55,15 +57,20 @@ class MasterUserController extends Controller
             'wali_kelas'     => User::where('role', 'wali_kelas')->count(),
             'guru_mapel'     => User::where('role', 'guru_mapel')->count(),
             'guru_piket'     => User::where('role', 'guru_piket')->count(),
+            'waka_kurikulum' => User::where('role', 'waka_kurikulum')->count(),
+            'waka_sdm'       => User::where('role', 'waka_sdm')->count(),
+            'wali_murid'     => User::where('role', 'wali_murid')->count(),
             'kepala_sekolah' => User::where('role', 'kepala_sekolah')->count(),
-            'waka'           => User::where('role', 'waka')->count(),
             'satpam'         => User::where('role', 'satpam')->count(),
+            'waka'           => User::where('role', 'waka')->count(),
         ];
+
+        $siswaList = Siswa::with('kelas')->where('status_aktif', true)->orderBy('nama_lengkap')->get(['id_siswa', 'nama_lengkap', 'nisn', 'id_kelas']);
 
         return view('admin.master.user', compact(
             'userList',
-            'totalUser', 'totalActive', 'totalAdmin', 'totalGuru', 'totalStaff',
-            'roleCounts',
+            'totalUser', 'totalActive', 'totalAdmin', 'totalGuru', 'totalStaff', 'totalWaliMurid',
+            'roleCounts', 'siswaList',
             'search', 'role', 'status'
         ));
     }
@@ -74,10 +81,11 @@ class MasterUserController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|max:255|unique:users,email',
             'password'  => 'required|string|min:6',
-            'role'      => 'required|in:admin,wali_kelas,guru_mapel,guru_piket,kepala_sekolah,waka,satpam',
+            'role'      => 'required|in:admin,wali_kelas,guru_mapel,guru_piket,kepala_sekolah,waka,waka_sdm,waka_kurikulum,wali_murid,satpam',
             'is_active' => 'nullable|boolean',
             'nip'       => 'nullable|string|max:30',
             'no_hp'     => 'nullable|string|max:20',
+            'id_siswa'  => 'nullable|exists:siswa,id_siswa',
         ]);
 
         DB::beginTransaction();
@@ -112,7 +120,6 @@ class MasterUserController extends Controller
                         'jenis_kelamin'=> 'L',
                         'no_hp'        => $noHp,
                     ]);
-                    // Also create a Guru record if not exists
                     Guru::firstOrCreate(
                         ['nip' => $nip],
                         [
@@ -178,6 +185,7 @@ class MasterUserController extends Controller
                     break;
 
                 case 'waka':
+                case 'waka_kurikulum':
                     Waka::create([
                         'user_id'      => $user->id,
                         'nip'          => $nip,
@@ -186,6 +194,26 @@ class MasterUserController extends Controller
                         'no_hp'        => $noHp,
                         'bidang'       => 'Kurikulum',
                     ]);
+                    break;
+
+                case 'waka_sdm':
+                    Waka::create([
+                        'user_id'      => $user->id,
+                        'nip'          => $nip,
+                        'nama_lengkap' => $validated['name'],
+                        'jenis_kelamin'=> 'L',
+                        'no_hp'        => $noHp,
+                        'bidang'       => 'SDM',
+                    ]);
+                    break;
+
+                case 'wali_murid':
+                    if (!empty($validated['id_siswa'])) {
+                        $siswa = Siswa::find($validated['id_siswa']);
+                        if ($siswa) {
+                            $siswa->update(['user_id' => $user->id]);
+                        }
+                    }
                     break;
 
                 case 'satpam':
@@ -216,9 +244,10 @@ class MasterUserController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => "required|email|max:255|unique:users,email,{$user->id}",
             'password'  => 'nullable|string|min:6',
-            'role'      => 'required|in:admin,wali_kelas,guru_mapel,guru_piket,kepala_sekolah,waka,satpam',
+            'role'      => 'required|in:admin,wali_kelas,guru_mapel,guru_piket,kepala_sekolah,waka,waka_sdm,waka_kurikulum,wali_murid,satpam',
             'is_active' => 'nullable|boolean',
             'no_hp'     => 'nullable|string|max:20',
+            'id_siswa'  => 'nullable|exists:siswa,id_siswa',
         ]);
 
         $updateData = [
@@ -234,6 +263,15 @@ class MasterUserController extends Controller
 
         $user->update($updateData);
 
+        if ($validated['role'] === 'wali_murid' && !empty($validated['id_siswa'])) {
+            // unlink previous student if any
+            Siswa::where('user_id', $user->id)->where('id_siswa', '!=', $validated['id_siswa'])->update(['user_id' => null]);
+            $siswa = Siswa::find($validated['id_siswa']);
+            if ($siswa) {
+                $siswa->update(['user_id' => $user->id]);
+            }
+        }
+
         $cleanName = trim(preg_replace('/\s*\([^)]*\)$/', '', $validated['name']));
 
         // Update related profile name if exists
@@ -247,7 +285,8 @@ class MasterUserController extends Controller
             $user->kepalaSekolah->update(['nama_lengkap' => $cleanName]);
         }
         if ($user->waka) {
-            $user->waka->update(['nama_lengkap' => $cleanName]);
+            $bidang = ($validated['role'] === 'waka_sdm') ? 'SDM' : 'Kurikulum';
+            $user->waka->update(['nama_lengkap' => $cleanName, 'bidang' => $bidang]);
         }
         if ($user->satpam) {
             $user->satpam->update(['nama_lengkap' => $cleanName]);

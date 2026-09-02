@@ -90,9 +90,11 @@
                             <option value="wali_kelas">Wali Kelas</option>
                             <option value="guru_piket">Guru Piket</option>
                             <option value="guru_mapel">Guru Mapel</option>
+                            <option value="waka_kurikulum">Waka Kurikulum</option>
+                            <option value="waka_sdm">Waka SDM / Kepegawaian</option>
+                            <option value="wali_murid">Wali Murid / Siswa</option>
                             <option value="satpam">Satpam (Keamanan Gate)</option>
                             <option value="kepala_sekolah">Kepala Sekolah</option>
-                            <option value="waka">Waka (Wakil Kepala Sekolah)</option>
                         </select>
                         <i class="bi bi-person-badge input-icon"></i>
                     </div>
@@ -100,14 +102,14 @@
 
                 <!-- Username Input -->
                 <div class="form-group">
-                    <label class="form-label" for="username">Username / NIP / Email</label>
+                    <label class="form-label" for="username">Username / NIP / NISN / Email</label>
                     <div class="input-wrapper">
                         <input 
                             type="text" 
                             name="username" 
                             id="username" 
                             class="form-input" 
-                            placeholder="Masukkan NIP, NISN atau ID User" 
+                            placeholder="Masukkan NIP, NISN atau Email" 
                             value="{{ old('username') }}" 
                             required 
                             autofocus
@@ -187,9 +189,12 @@
         'wali_kelas': 'walikelas@smkn1boyolangu.sch.id',
         'guru_piket': 'gurupiket@smkn1boyolangu.sch.id',
         'guru_mapel': 'gurumapel@smkn1boyolangu.sch.id',
+        'waka_kurikulum': 'wakakurikulum@smkn1boyolangu.sch.id',
+        'waka_sdm': 'wakasdm@smkn1boyolangu.sch.id',
+        'wali_murid': 'walimurid@smkn1boyolangu.sch.id',
         'satpam': 'satpam@smkn1boyolangu.sch.id',
         'kepala_sekolah': 'kepsek@smkn1boyolangu.sch.id',
-        'waka': 'waka@smkn1boyolangu.sch.id'
+        'waka': 'wakakurikulum@smkn1boyolangu.sch.id'
     };
 
     function quickFillDemoCredential() {

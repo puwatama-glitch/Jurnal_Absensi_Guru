@@ -348,54 +348,66 @@
                 <span>{{ session('error') }}</span>
             </div>
         @endif
-        @if($errors->any())
-            <div class="toast error">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>{{ $errors->first() }}</span>
+<div class="user-page-container">
+
+    {{-- Header Banner --}}
+    <div class="page-header-card">
+        <div class="header-left">
+            <div class="header-icon-box">
+                <i class="fa-solid fa-users-gear"></i>
             </div>
-        @endif
+            <div>
+                <h1 class="header-title">Manajemen Akun Pengguna</h1>
+                <p class="header-subtitle">Kelola seluruh hak akses login, peran manajemen, status aktif, dan keamanan sistem informasi.</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="system-time-badge">
+                <i class="fa-regular fa-clock"></i> {{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}
+            </span>
+        </div>
     </div>
 
     {{-- KPI Cards --}}
     <div class="kpi-grid">
-        <div class="kpi-card">
-            <div class="kpi-icon indigo">
+        <div class="kpi-card total">
+            <div class="kpi-icon-wrap total">
                 <i class="fa-solid fa-users"></i>
             </div>
-            <div>
+            <div class="kpi-body">
                 <div class="kpi-val">{{ $totalUser }}</div>
-                <div class="kpi-lbl">TOTAL PENGGUNA</div>
-                <div class="kpi-sub">Terdaftar di database</div>
+                <div class="kpi-lbl">TOTAL AKUN</div>
+                <div class="kpi-sub">Terdaftar di Database</div>
             </div>
         </div>
 
-        <div class="kpi-card">
-            <div class="kpi-icon emerald">
+        <div class="kpi-card active">
+            <div class="kpi-icon-wrap active">
                 <i class="fa-solid fa-user-check"></i>
             </div>
-            <div>
+            <div class="kpi-body">
                 <div class="kpi-val">{{ $totalActive }}</div>
                 <div class="kpi-lbl">AKUN AKTIF</div>
-                <div class="kpi-sub">Dapat login ke sistem</div>
+                <div class="kpi-sub">{{ $totalUser > 0 ? round(($totalActive / $totalUser) * 100) : 0 }}% Akses Diizinkan</div>
             </div>
         </div>
 
-        <div class="kpi-card">
-            <div class="kpi-icon violet">
+        <div class="kpi-card admin">
+            <div class="kpi-icon-wrap admin">
                 <i class="fa-solid fa-user-shield"></i>
             </div>
-            <div>
+            <div class="kpi-body">
                 <div class="kpi-val">{{ $totalAdmin }}</div>
                 <div class="kpi-lbl">ADMINISTRATOR</div>
-                <div class="kpi-sub">Akses penuh sistem</div>
+                <div class="kpi-sub">Hak Akses Penuh Sistem</div>
             </div>
         </div>
 
-        <div class="kpi-card">
-            <div class="kpi-icon sky">
+        <div class="kpi-card guru">
+            <div class="kpi-icon-wrap guru">
                 <i class="fa-solid fa-chalkboard-user"></i>
             </div>
-            <div>
+            <div class="kpi-body">
                 <div class="kpi-val">{{ $totalGuru }}</div>
                 <div class="kpi-lbl">DEWAN GURU</div>
                 <div class="kpi-sub">Wali &amp; Pengampu Mapel</div>
@@ -407,7 +419,7 @@
     <div class="role-tabs-wrap">
         <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'all'])) }}" class="role-tab-btn {{ empty($role) || $role === 'all' ? 'active' : '' }}">
             <i class="fa-solid fa-border-all"></i>
-            <span>Semua Manajemen</span>
+            <span>Semua</span>
             <span class="role-tab-count">{{ $roleCounts['all'] }}</span>
         </a>
         <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'admin'])) }}" class="role-tab-btn {{ $role === 'admin' ? 'active' : '' }}">
@@ -430,15 +442,25 @@
             <span>Guru Piket</span>
             <span class="role-tab-count">{{ $roleCounts['guru_piket'] }}</span>
         </a>
+        <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'waka_kurikulum'])) }}" class="role-tab-btn {{ $role === 'waka_kurikulum' ? 'active' : '' }}">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>Waka Kurikulum</span>
+            <span class="role-tab-count">{{ $roleCounts['waka_kurikulum'] }}</span>
+        </a>
+        <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'waka_sdm'])) }}" class="role-tab-btn {{ $role === 'waka_sdm' ? 'active' : '' }}">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Waka SDM</span>
+            <span class="role-tab-count">{{ $roleCounts['waka_sdm'] }}</span>
+        </a>
+        <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'wali_murid'])) }}" class="role-tab-btn {{ $role === 'wali_murid' ? 'active' : '' }}">
+            <i class="fa-solid fa-users"></i>
+            <span>Wali Murid</span>
+            <span class="role-tab-count">{{ $roleCounts['wali_murid'] }}</span>
+        </a>
         <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'kepala_sekolah'])) }}" class="role-tab-btn {{ $role === 'kepala_sekolah' ? 'active' : '' }}">
             <i class="fa-solid fa-graduation-cap"></i>
             <span>Kepala Sekolah</span>
             <span class="role-tab-count">{{ $roleCounts['kepala_sekolah'] }}</span>
-        </a>
-        <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'waka'])) }}" class="role-tab-btn {{ $role === 'waka' ? 'active' : '' }}">
-            <i class="fa-solid fa-briefcase"></i>
-            <span>Waka</span>
-            <span class="role-tab-count">{{ $roleCounts['waka'] }}</span>
         </a>
         <a href="{{ route('admin.master.user', array_merge(request()->except('role', 'page'), ['role' => 'satpam'])) }}" class="role-tab-btn {{ $role === 'satpam' ? 'active' : '' }}">
             <i class="fa-solid fa-shield-halved"></i>
@@ -522,6 +544,9 @@
                                 'wali_kelas'     => 'Wali Kelas',
                                 'guru_mapel'     => 'Guru Mapel',
                                 'guru_piket'     => 'Guru Piket',
+                                'waka_kurikulum' => 'Waka Kurikulum',
+                                'waka_sdm'       => 'Waka SDM',
+                                'wali_murid'     => 'Wali Murid',
                                 'kepala_sekolah' => 'Kepala Sekolah',
                                 'waka'           => 'Waka',
                                 'satpam'         => 'Satpam',
@@ -533,6 +558,9 @@
                                 'wali_kelas'     => 'fa-user-tie',
                                 'guru_mapel'     => 'fa-book-open-reader',
                                 'guru_piket'     => 'fa-clipboard-check',
+                                'waka_kurikulum' => 'fa-book-bookmark',
+                                'waka_sdm'       => 'fa-user-gear',
+                                'wali_murid'     => 'fa-users',
                                 'kepala_sekolah' => 'fa-graduation-cap',
                                 'waka'           => 'fa-briefcase',
                                 'satpam'         => 'fa-shield-halved',
@@ -557,7 +585,14 @@
                                                 <span style="font-size: 11px; background: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 6px; font-weight: 700; margin-left: 4px;">Akun Anda</span>
                                             @endif
                                         </div>
-                                        <div class="user-email-text"><i class="fa-regular fa-envelope" style="font-size: 11px; margin-right: 4px;"></i>{{ $u->email }}</div>
+                                        <div class="user-email-text">
+                                            <i class="fa-regular fa-envelope" style="font-size: 11px; margin-right: 4px;"></i>{{ $u->email }}
+                                            @if($u->role === 'wali_murid' && $u->siswa)
+                                                <span style="display: block; font-size: 11px; color: #047857; margin-top: 2px;">
+                                                    <i class="fa-solid fa-graduation-cap"></i> Siswa: {{ $u->siswa->nama_lengkap }} ({{ $u->siswa->kelas->nama_kelas ?? '-' }})
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -578,66 +613,57 @@
                                     </span>
                                 @endif
                             </td>
-                            <td style="color: #64748b; font-size: 13px; font-weight: 600;">
-                                {{ $u->created_at ? $u->created_at->translatedFormat('d M Y, H:i') : '-' }}
+                            <td style="color: #64748b; font-size: 13px;">
+                                {{ $u->created_at ? $u->created_at->locale('id')->isoFormat('D MMM Y') : '-' }}
                             </td>
-                            <td>
+                            <td style="text-align: right;">
                                 <div class="action-btn-group">
-                                    {{-- Detail Modal Button --}}
-                                    <button 
-                                        type="button" 
-                                        class="btn-tbl-action view" 
-                                        title="Lihat Detail"
-                                        onclick='openDetailModal(@json($u), "{{ $roleLabel }}", "{{ $avatarUrl }}")'
-                                    >
+                                    {{-- Toggle Aktif --}}
+                                    <form action="{{ route('admin.master.user.toggle-status', $u->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" 
+                                                class="btn-tbl-action {{ $u->is_active ? 'toggle-on' : 'toggle-off' }}" 
+                                                title="{{ $u->is_active ? 'Non-aktifkan Akun' : 'Aktifkan Akun' }}"
+                                                {{ $u->id === Auth::id() ? 'disabled style=opacity:0.4;cursor:not-allowed;' : '' }}>
+                                            <i class="fa-solid {{ $u->is_active ? 'fa-user-slash' : 'fa-user-check' }}"></i>
+                                        </button>
+                                    </form>
+
+                                    {{-- Detail Modal --}}
+                                    <button type="button" 
+                                            class="btn-tbl-action" 
+                                            title="Lihat Detail Akun"
+                                            onclick="openDetailModal(@json($u), '{{ $roleLabel }}', '{{ $avatarUrl }}')">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
-                                    {{-- Edit Modal Button --}}
-                                    <button 
-                                        type="button" 
-                                        class="btn-tbl-action edit" 
-                                        title="Edit Pengguna"
-                                        onclick='openEditModal(@json($u))'
-                                    >
+                                    {{-- Edit Modal --}}
+                                    <button type="button" 
+                                            class="btn-tbl-action edit" 
+                                            title="Edit Akun"
+                                            onclick="openEditModal(@json($u))">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
 
-                                    {{-- Toggle Status Button --}}
-                                    @if($u->id !== Auth::id())
-                                        <form action="{{ route('admin.master.user.toggle-status', $u->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            <button 
-                                                type="submit" 
-                                                class="btn-tbl-action toggle" 
-                                                title="{{ $u->is_active ? 'Nonaktifkan Akun' : 'Aktifkan Akun' }}"
-                                                onclick="return confirm('Apakah Anda yakin ingin mengubah status akun {{ $u->name }}?')"
-                                            >
-                                                <i class="fa-solid {{ $u->is_active ? 'fa-toggle-on' : 'fa-toggle-off' }}" style="font-size: 15px; color: {{ $u->is_active ? '#10b981' : '#94a3b8' }};"></i>
-                                            </button>
-                                        </form>
-
-                                        {{-- Delete Button --}}
-                                        <button 
-                                            type="button" 
+                                    {{-- Hapus Modal --}}
+                                    <button type="button" 
                                             class="btn-tbl-action delete" 
                                             title="Hapus Akun"
-                                            onclick="openDeleteModal({{ $u->id }}, '{{ addslashes($u->name) }}')"
-                                        >
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    @endif
+                                            {{ $u->id === Auth::id() ? 'disabled style=opacity:0.4;cursor:not-allowed;' : '' }}
+                                            onclick="openDeleteModal({{ $u->id }}, '{{ addslashes($u->name) }}')">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 48px 16px;">
-                                <div style="color: #94a3b8; font-size: 42px; margin-bottom: 12px;">
-                                    <i class="fa-solid fa-user-slash"></i>
+                            <td colspan="6" style="text-align: center; padding: 48px 16px; color: #94a3b8;">
+                                <div style="font-size: 36px; margin-bottom: 12px; color: #cbd5e1;">
+                                    <i class="fa-solid fa-users-slash"></i>
                                 </div>
-                                <div style="font-size: 16px; font-weight: 700; color: #475569;">Tidak ada data pengguna ditemukan</div>
-                                <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">Coba gunakan kata kunci pencarian lain atau pilih tab role yang berbeda.</p>
+                                <div style="font-weight: 700; font-size: 15px; color: #475569;">Tidak ada data pengguna ditemukan</div>
+                                <div style="font-size: 13px; margin-top: 4px;">Coba ubah kata kunci pencarian atau filter role.</div>
                             </td>
                         </tr>
                     @endforelse
@@ -647,32 +673,14 @@
 
         {{-- Pagination --}}
         @if($userList->hasPages())
-        <div class="pagination-container">
-            <span class="pag-text">
-                Menampilkan {{ $userList->firstItem() ?? 0 }}–{{ $userList->lastItem() ?? 0 }} dari {{ $userList->total() }} user
-            </span>
-            <div class="pag-pills">
-                @if($userList->onFirstPage())
-                    <span class="disabled"><i class="fa-solid fa-chevron-left"></i></span>
-                @else
-                    <a href="{{ $userList->previousPageUrl() }}"><i class="fa-solid fa-chevron-left"></i></a>
-                @endif
-
-                @foreach($userList->getUrlRange(max(1, $userList->currentPage() - 2), min($userList->lastPage(), $userList->currentPage() + 2)) as $page => $url)
-                    @if($page == $userList->currentPage())
-                        <span class="active">{{ $page }}</span>
-                    @else
-                        <a href="{{ $url }}">{{ $page }}</a>
-                    @endif
-                @endforeach
-
-                @if($userList->hasMorePages())
-                    <a href="{{ $userList->nextPageUrl() }}"><i class="fa-solid fa-chevron-right"></i></a>
-                @else
-                    <span class="disabled"><i class="fa-solid fa-chevron-right"></i></span>
-                @endif
+            <div style="padding: 16px 20px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div style="font-size: 13px; color: #64748b;">
+                    Menampilkan <strong>{{ $userList->firstItem() }}</strong> - <strong>{{ $userList->lastItem() }}</strong> dari <strong>{{ $userList->total() }}</strong> pengguna
+                </div>
+                <div>
+                    {{ $userList->links() }}
+                </div>
             </div>
-        </div>
         @endif
     </div>
 </div>
@@ -711,13 +719,15 @@
                 <div class="form-row-2">
                     <div>
                         <label class="form-label-custom">Role / Manajemen <span>*</span></label>
-                        <select name="role" class="form-ctrl-custom" required>
+                        <select name="role" id="add_role" class="form-ctrl-custom" onchange="onRoleChange('add')" required>
                             <option value="admin">Administrator</option>
                             <option value="wali_kelas">Wali Kelas</option>
                             <option value="guru_mapel" selected>Guru Mapel</option>
                             <option value="guru_piket">Guru Piket</option>
+                            <option value="waka_kurikulum">Waka Kurikulum</option>
+                            <option value="waka_sdm">Waka SDM / Kepegawaian</option>
+                            <option value="wali_murid">Wali Murid / Siswa</option>
                             <option value="kepala_sekolah">Kepala Sekolah</option>
-                            <option value="waka">Waka</option>
                             <option value="satpam">Satpam</option>
                         </select>
                     </div>
@@ -728,6 +738,17 @@
                             <option value="0">Non-Aktif (Ditangguhkan)</option>
                         </select>
                     </div>
+                </div>
+
+                {{-- Siswa Link Option for Wali Murid --}}
+                <div class="form-group-custom" id="add_siswa_wrap" style="display: none;">
+                    <label class="form-label-custom">Hubungkan dengan Siswa</label>
+                    <select name="id_siswa" class="form-ctrl-custom">
+                        <option value="">-- Pilih Siswa yang Diwakili --</option>
+                        @foreach($siswaList as $sw)
+                            <option value="{{ $sw->id_siswa }}">{{ $sw->nama_lengkap }} ({{ $sw->kelas->nama_kelas ?? '-' }}) - NISN: {{ $sw->nisn }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="form-row-2">
@@ -786,13 +807,15 @@
                 <div class="form-row-2">
                     <div>
                         <label class="form-label-custom">Role / Manajemen <span>*</span></label>
-                        <select name="role" id="edit_role" class="form-ctrl-custom" required>
+                        <select name="role" id="edit_role" class="form-ctrl-custom" onchange="onRoleChange('edit')" required>
                             <option value="admin">Administrator</option>
                             <option value="wali_kelas">Wali Kelas</option>
                             <option value="guru_mapel">Guru Mapel</option>
                             <option value="guru_piket">Guru Piket</option>
+                            <option value="waka_kurikulum">Waka Kurikulum</option>
+                            <option value="waka_sdm">Waka SDM / Kepegawaian</option>
+                            <option value="wali_murid">Wali Murid / Siswa</option>
                             <option value="kepala_sekolah">Kepala Sekolah</option>
-                            <option value="waka">Waka</option>
                             <option value="satpam">Satpam</option>
                         </select>
                     </div>
@@ -803,6 +826,17 @@
                             <option value="0">Non-Aktif (Ditangguhkan)</option>
                         </select>
                     </div>
+                </div>
+
+                {{-- Siswa Link Option for Wali Murid in Edit Modal --}}
+                <div class="form-group-custom" id="edit_siswa_wrap" style="display: none;">
+                    <label class="form-label-custom">Hubungkan dengan Siswa</label>
+                    <select name="id_siswa" id="edit_id_siswa" class="form-ctrl-custom">
+                        <option value="">-- Pilih Siswa yang Diwakili --</option>
+                        @foreach($siswaList as $sw)
+                            <option value="{{ $sw->id_siswa }}">{{ $sw->nama_lengkap }} ({{ $sw->kelas->nama_kelas ?? '-' }}) - NISN: {{ $sw->nisn }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="modal-ftr">
@@ -906,8 +940,18 @@
         toasts.forEach(t => t.style.display = 'none');
     }, 4000);
 
+    function onRoleChange(type) {
+        const select = document.getElementById(type + '_role');
+        const wrap = document.getElementById(type + '_siswa_wrap');
+        if (select && wrap) {
+            wrap.style.display = (select.value === 'wali_murid') ? 'block' : 'none';
+        }
+    }
+
     // Modal Add
     function openAddModal() {
+        document.getElementById('add_role').value = 'guru_mapel';
+        onRoleChange('add');
         document.getElementById('addUserModal').classList.add('show');
     }
     function closeAddModal() {
@@ -921,6 +965,13 @@
         document.getElementById('edit_password').value = '';
         document.getElementById('edit_role').value = user.role || 'guru_mapel';
         document.getElementById('edit_is_active').value = user.is_active ? '1' : '0';
+
+        if (user.role === 'wali_murid' && user.siswa) {
+            document.getElementById('edit_id_siswa').value = user.siswa.id_siswa;
+        } else {
+            document.getElementById('edit_id_siswa').value = '';
+        }
+        onRoleChange('edit');
 
         const form = document.getElementById('editUserForm');
         form.action = `/admin/master/user/${user.id}`;
@@ -944,10 +995,16 @@
             ? '<span style="color: #065f46;">● Aktif</span>' 
             : '<span style="color: #991b1b;">● Non-Aktif</span>';
 
+        let siswaInfo = '';
+        if (user.role === 'wali_murid' && user.siswa) {
+            siswaInfo = `<div style="font-size: 11.5px; color: #047857; margin-top: 4px;"><i class="fa-solid fa-graduation-cap"></i> Mewakili Siswa: <strong>${user.siswa.nama_lengkap}</strong></div>`;
+        }
+
         document.getElementById('detail_role_badge').innerHTML = `
             <span class="role-badge ${user.role}">
                 <i class="fa-solid fa-tag"></i> ${roleLabel}
             </span>
+            ${siswaInfo}
         `;
 
         document.getElementById('detailUserModal').classList.add('show');
@@ -957,10 +1014,10 @@
     }
 
     // Modal Delete
-    function openDeleteModal(userId, userName) {
-        document.getElementById('delete_user_name').textContent = userName;
+    function openDeleteModal(id, name) {
+        document.getElementById('delete_user_name').textContent = name;
         const form = document.getElementById('deleteUserForm');
-        form.action = `/admin/master/user/${userId}`;
+        form.action = `/admin/master/user/${id}`;
         document.getElementById('deleteUserModal').classList.add('show');
     }
     function closeDeleteModal() {
